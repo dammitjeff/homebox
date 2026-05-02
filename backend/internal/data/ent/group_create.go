@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entity"
-	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytemplate"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytype"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/group"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/groupinvitationtoken"
@@ -178,21 +177,6 @@ func (_c *GroupCreate) AddNotifiers(v ...*Notifier) *GroupCreate {
 		ids[i] = v[i].ID
 	}
 	return _c.AddNotifierIDs(ids...)
-}
-
-// AddEntityTemplateIDs adds the "entity_templates" edge to the EntityTemplate entity by IDs.
-func (_c *GroupCreate) AddEntityTemplateIDs(ids ...uuid.UUID) *GroupCreate {
-	_c.mutation.AddEntityTemplateIDs(ids...)
-	return _c
-}
-
-// AddEntityTemplates adds the "entity_templates" edges to the EntityTemplate entity.
-func (_c *GroupCreate) AddEntityTemplates(v ...*EntityTemplate) *GroupCreate {
-	ids := make([]uuid.UUID, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddEntityTemplateIDs(ids...)
 }
 
 // Mutation returns the GroupMutation object of the builder.
@@ -407,22 +391,6 @@ func (_c *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(notifier.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := _c.mutation.EntityTemplatesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   group.EntityTemplatesTable,
-			Columns: []string{group.EntityTemplatesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

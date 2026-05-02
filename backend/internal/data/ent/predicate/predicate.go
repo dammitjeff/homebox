@@ -21,9 +21,6 @@ type Entity func(*sql.Selector)
 // EntityField is the predicate function for entityfield builders.
 type EntityField func(*sql.Selector)
 
-// EntityTemplate is the predicate function for entitytemplate builders.
-type EntityTemplate func(*sql.Selector)
-
 // EntityType is the predicate function for entitytype builders.
 type EntityType func(*sql.Selector)
 
@@ -41,9 +38,6 @@ type Notifier func(*sql.Selector)
 
 // Tag is the predicate function for tag builders.
 type Tag func(*sql.Selector)
-
-// TemplateField is the predicate function for templatefield builders.
-type TemplateField func(*sql.Selector)
 
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

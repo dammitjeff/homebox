@@ -35,8 +35,6 @@ const (
 	EdgeInvitationTokens = "invitation_tokens"
 	// EdgeNotifiers holds the string denoting the notifiers edge name in mutations.
 	EdgeNotifiers = "notifiers"
-	// EdgeEntityTemplates holds the string denoting the entity_templates edge name in mutations.
-	EdgeEntityTemplates = "entity_templates"
 	// Table holds the table name of the group in the database.
 	Table = "groups"
 	// UsersTable is the table that holds the users relation/edge. The primary key declared below.
@@ -79,13 +77,6 @@ const (
 	NotifiersInverseTable = "notifiers"
 	// NotifiersColumn is the table column denoting the notifiers relation/edge.
 	NotifiersColumn = "group_id"
-	// EntityTemplatesTable is the table that holds the entity_templates relation/edge.
-	EntityTemplatesTable = "entity_templates"
-	// EntityTemplatesInverseTable is the table name for the EntityTemplate entity.
-	// It exists in this package in order to avoid circular dependency with the "entitytemplate" package.
-	EntityTemplatesInverseTable = "entity_templates"
-	// EntityTemplatesColumn is the table column denoting the entity_templates relation/edge.
-	EntityTemplatesColumn = "group_entity_templates"
 )
 
 // Columns holds all SQL columns for group fields.
@@ -239,20 +230,6 @@ func ByNotifiers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newNotifiersStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-
-// ByEntityTemplatesCount orders the results by entity_templates count.
-func ByEntityTemplatesCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newEntityTemplatesStep(), opts...)
-	}
-}
-
-// ByEntityTemplates orders the results by entity_templates terms.
-func ByEntityTemplates(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newEntityTemplatesStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
 func newUsersStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -293,12 +270,5 @@ func newNotifiersStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(NotifiersInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, NotifiersTable, NotifiersColumn),
-	)
-}
-func newEntityTemplatesStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(EntityTemplatesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, EntityTemplatesTable, EntityTemplatesColumn),
 	)
 }

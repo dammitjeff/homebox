@@ -476,15 +476,6 @@ func (svc *EntityService) CsvImport(ctx context.Context, gid uuid.UUID, data io.
 			ModelNumber:  row.ModelNumber,
 			SerialNumber: row.SerialNumber,
 
-			LifetimeWarranty: row.LifetimeWarranty,
-			WarrantyExpires:  row.WarrantyExpires,
-			WarrantyDetails:  row.WarrantyDetails,
-
-			SoldTo:    row.SoldTo,
-			SoldDate:  row.SoldDate,
-			SoldPrice: row.SoldPrice,
-			SoldNotes: row.SoldNotes,
-
 			Notes:  row.Notes,
 			Fields: fields,
 		}

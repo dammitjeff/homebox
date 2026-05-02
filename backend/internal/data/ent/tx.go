@@ -22,8 +22,6 @@ type Tx struct {
 	Entity *EntityClient
 	// EntityField is the client for interacting with the EntityField builders.
 	EntityField *EntityFieldClient
-	// EntityTemplate is the client for interacting with the EntityTemplate builders.
-	EntityTemplate *EntityTemplateClient
 	// EntityType is the client for interacting with the EntityType builders.
 	EntityType *EntityTypeClient
 	// Group is the client for interacting with the Group builders.
@@ -36,8 +34,6 @@ type Tx struct {
 	Notifier *NotifierClient
 	// Tag is the client for interacting with the Tag builders.
 	Tag *TagClient
-	// TemplateField is the client for interacting with the TemplateField builders.
-	TemplateField *TemplateFieldClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -176,14 +172,12 @@ func (tx *Tx) init() {
 	tx.AuthTokens = NewAuthTokensClient(tx.config)
 	tx.Entity = NewEntityClient(tx.config)
 	tx.EntityField = NewEntityFieldClient(tx.config)
-	tx.EntityTemplate = NewEntityTemplateClient(tx.config)
 	tx.EntityType = NewEntityTypeClient(tx.config)
 	tx.Group = NewGroupClient(tx.config)
 	tx.GroupInvitationToken = NewGroupInvitationTokenClient(tx.config)
 	tx.MaintenanceEntry = NewMaintenanceEntryClient(tx.config)
 	tx.Notifier = NewNotifierClient(tx.config)
 	tx.Tag = NewTagClient(tx.config)
-	tx.TemplateField = NewTemplateFieldClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

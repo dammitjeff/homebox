@@ -14,7 +14,6 @@ type AllRepos struct {
 	Groups          *GroupRepository
 	Entities        *EntityRepository
 	EntityTypes     *EntityTypeRepository
-	EntityTemplates *EntityTemplatesRepository
 	Tags            *TagRepository
 	Attachments     *AttachmentRepo
 	MaintEntry      *MaintenanceEntryRepository
@@ -29,7 +28,6 @@ func New(db *ent.Client, bus *eventbus.EventBus, storage config.Storage, pubSubC
 		Groups:          NewGroupRepository(db),
 		Entities:        &EntityRepository{db, bus, attachments},
 		EntityTypes:     &EntityTypeRepository{db, bus},
-		EntityTemplates: &EntityTemplatesRepository{db, bus},
 		Tags:            &TagRepository{db, bus},
 		Attachments:     attachments,
 		MaintEntry:      &MaintenanceEntryRepository{db},

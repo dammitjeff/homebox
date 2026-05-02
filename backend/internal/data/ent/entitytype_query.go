@@ -14,7 +14,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entity"
-	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytemplate"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytype"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/group"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/predicate"
@@ -23,14 +22,13 @@ import (
 // EntityTypeQuery is the builder for querying EntityType entities.
 type EntityTypeQuery struct {
 	config
-	ctx                 *QueryContext
-	order               []entitytype.OrderOption
-	inters              []Interceptor
-	predicates          []predicate.EntityType
-	withGroup           *GroupQuery
-	withEntities        *EntityQuery
-	withDefaultTemplate *EntityTemplateQuery
-	withFKs             bool
+	ctx          *QueryContext
+	order        []entitytype.OrderOption
+	inters       []Interceptor
+	predicates   []predicate.EntityType
+	withGroup    *GroupQuery
+	withEntities *EntityQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -104,28 +102,6 @@ func (_q *EntityTypeQuery) QueryEntities() *EntityQuery {
 			sqlgraph.From(entitytype.Table, entitytype.FieldID, selector),
 			sqlgraph.To(entity.Table, entity.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, entitytype.EntitiesTable, entitytype.EntitiesColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryDefaultTemplate chains the current query on the "default_template" edge.
-func (_q *EntityTypeQuery) QueryDefaultTemplate() *EntityTemplateQuery {
-	query := (&EntityTemplateClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(entitytype.Table, entitytype.FieldID, selector),
-			sqlgraph.To(entitytemplate.Table, entitytemplate.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, entitytype.DefaultTemplateTable, entitytype.DefaultTemplateColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -320,14 +296,13 @@ func (_q *EntityTypeQuery) Clone() *EntityTypeQuery {
 		return nil
 	}
 	return &EntityTypeQuery{
-		config:              _q.config,
-		ctx:                 _q.ctx.Clone(),
-		order:               append([]entitytype.OrderOption{}, _q.order...),
-		inters:              append([]Interceptor{}, _q.inters...),
-		predicates:          append([]predicate.EntityType{}, _q.predicates...),
-		withGroup:           _q.withGroup.Clone(),
-		withEntities:        _q.withEntities.Clone(),
-		withDefaultTemplate: _q.withDefaultTemplate.Clone(),
+		config:       _q.config,
+		ctx:          _q.ctx.Clone(),
+		order:        append([]entitytype.OrderOption{}, _q.order...),
+		inters:       append([]Interceptor{}, _q.inters...),
+		predicates:   append([]predicate.EntityType{}, _q.predicates...),
+		withGroup:    _q.withGroup.Clone(),
+		withEntities: _q.withEntities.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -353,17 +328,6 @@ func (_q *EntityTypeQuery) WithEntities(opts ...func(*EntityQuery)) *EntityTypeQ
 		opt(query)
 	}
 	_q.withEntities = query
-	return _q
-}
-
-// WithDefaultTemplate tells the query-builder to eager-load the nodes that are connected to
-// the "default_template" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *EntityTypeQuery) WithDefaultTemplate(opts ...func(*EntityTemplateQuery)) *EntityTypeQuery {
-	query := (&EntityTemplateClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withDefaultTemplate = query
 	return _q
 }
 
@@ -446,13 +410,12 @@ func (_q *EntityTypeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*E
 		nodes       = []*EntityType{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [2]bool{
 			_q.withGroup != nil,
 			_q.withEntities != nil,
-			_q.withDefaultTemplate != nil,
 		}
 	)
-	if _q.withGroup != nil || _q.withDefaultTemplate != nil {
+	if _q.withGroup != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -486,12 +449,6 @@ func (_q *EntityTypeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*E
 		if err := _q.loadEntities(ctx, query, nodes,
 			func(n *EntityType) { n.Edges.Entities = []*Entity{} },
 			func(n *EntityType, e *Entity) { n.Edges.Entities = append(n.Edges.Entities, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := _q.withDefaultTemplate; query != nil {
-		if err := _q.loadDefaultTemplate(ctx, query, nodes, nil,
-			func(n *EntityType, e *EntityTemplate) { n.Edges.DefaultTemplate = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -558,38 +515,6 @@ func (_q *EntityTypeQuery) loadEntities(ctx context.Context, query *EntityQuery,
 			return fmt.Errorf(`unexpected referenced foreign-key "entity_type_entities" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
-	}
-	return nil
-}
-func (_q *EntityTypeQuery) loadDefaultTemplate(ctx context.Context, query *EntityTemplateQuery, nodes []*EntityType, init func(*EntityType), assign func(*EntityType, *EntityTemplate)) error {
-	ids := make([]uuid.UUID, 0, len(nodes))
-	nodeids := make(map[uuid.UUID][]*EntityType)
-	for i := range nodes {
-		if nodes[i].entity_type_default_template == nil {
-			continue
-		}
-		fk := *nodes[i].entity_type_default_template
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(entitytemplate.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "entity_type_default_template" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
 	}
 	return nil
 }

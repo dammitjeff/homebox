@@ -45,26 +45,12 @@ const (
 	FieldModelNumber = "model_number"
 	// FieldManufacturer holds the string denoting the manufacturer field in the database.
 	FieldManufacturer = "manufacturer"
-	// FieldLifetimeWarranty holds the string denoting the lifetime_warranty field in the database.
-	FieldLifetimeWarranty = "lifetime_warranty"
-	// FieldWarrantyExpires holds the string denoting the warranty_expires field in the database.
-	FieldWarrantyExpires = "warranty_expires"
-	// FieldWarrantyDetails holds the string denoting the warranty_details field in the database.
-	FieldWarrantyDetails = "warranty_details"
 	// FieldPurchaseDate holds the string denoting the purchase_date field in the database.
 	FieldPurchaseDate = "purchase_date"
 	// FieldPurchaseFrom holds the string denoting the purchase_from field in the database.
 	FieldPurchaseFrom = "purchase_from"
 	// FieldPurchasePrice holds the string denoting the purchase_price field in the database.
 	FieldPurchasePrice = "purchase_price"
-	// FieldSoldDate holds the string denoting the sold_date field in the database.
-	FieldSoldDate = "sold_date"
-	// FieldSoldTo holds the string denoting the sold_to field in the database.
-	FieldSoldTo = "sold_to"
-	// FieldSoldPrice holds the string denoting the sold_price field in the database.
-	FieldSoldPrice = "sold_price"
-	// FieldSoldNotes holds the string denoting the sold_notes field in the database.
-	FieldSoldNotes = "sold_notes"
 	// EdgeGroup holds the string denoting the group edge name in mutations.
 	EdgeGroup = "group"
 	// EdgeParent holds the string denoting the parent edge name in mutations.
@@ -151,16 +137,9 @@ var Columns = []string{
 	FieldSerialNumber,
 	FieldModelNumber,
 	FieldManufacturer,
-	FieldLifetimeWarranty,
-	FieldWarrantyExpires,
-	FieldWarrantyDetails,
 	FieldPurchaseDate,
 	FieldPurchaseFrom,
 	FieldPurchasePrice,
-	FieldSoldDate,
-	FieldSoldTo,
-	FieldSoldPrice,
-	FieldSoldNotes,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "entities"
@@ -227,16 +206,8 @@ var (
 	ModelNumberValidator func(string) error
 	// ManufacturerValidator is a validator for the "manufacturer" field. It is called by the builders before save.
 	ManufacturerValidator func(string) error
-	// DefaultLifetimeWarranty holds the default value on creation for the "lifetime_warranty" field.
-	DefaultLifetimeWarranty bool
-	// WarrantyDetailsValidator is a validator for the "warranty_details" field. It is called by the builders before save.
-	WarrantyDetailsValidator func(string) error
 	// DefaultPurchasePrice holds the default value on creation for the "purchase_price" field.
 	DefaultPurchasePrice float64
-	// DefaultSoldPrice holds the default value on creation for the "sold_price" field.
-	DefaultSoldPrice float64
-	// SoldNotesValidator is a validator for the "sold_notes" field. It is called by the builders before save.
-	SoldNotesValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -324,21 +295,6 @@ func ByManufacturer(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldManufacturer, opts...).ToFunc()
 }
 
-// ByLifetimeWarranty orders the results by the lifetime_warranty field.
-func ByLifetimeWarranty(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLifetimeWarranty, opts...).ToFunc()
-}
-
-// ByWarrantyExpires orders the results by the warranty_expires field.
-func ByWarrantyExpires(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldWarrantyExpires, opts...).ToFunc()
-}
-
-// ByWarrantyDetails orders the results by the warranty_details field.
-func ByWarrantyDetails(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldWarrantyDetails, opts...).ToFunc()
-}
-
 // ByPurchaseDate orders the results by the purchase_date field.
 func ByPurchaseDate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPurchaseDate, opts...).ToFunc()
@@ -352,26 +308,6 @@ func ByPurchaseFrom(opts ...sql.OrderTermOption) OrderOption {
 // ByPurchasePrice orders the results by the purchase_price field.
 func ByPurchasePrice(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPurchasePrice, opts...).ToFunc()
-}
-
-// BySoldDate orders the results by the sold_date field.
-func BySoldDate(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSoldDate, opts...).ToFunc()
-}
-
-// BySoldTo orders the results by the sold_to field.
-func BySoldTo(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSoldTo, opts...).ToFunc()
-}
-
-// BySoldPrice orders the results by the sold_price field.
-func BySoldPrice(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSoldPrice, opts...).ToFunc()
-}
-
-// BySoldNotes orders the results by the sold_notes field.
-func BySoldNotes(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSoldNotes, opts...).ToFunc()
 }
 
 // ByGroupField orders the results by group field.

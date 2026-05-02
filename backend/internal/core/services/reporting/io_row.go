@@ -35,15 +35,6 @@ type ExportCSVRow struct {
 	ModelNumber  string `csv:"HB.model_number"`
 	SerialNumber string `csv:"HB.serial_number"`
 
-	LifetimeWarranty bool       `csv:"HB.lifetime_warranty"`
-	WarrantyExpires  types.Date `csv:"HB.warranty_expires"`
-	WarrantyDetails  string     `csv:"HB.warranty_details"`
-
-	SoldTo    string     `csv:"HB.sold_to"`
-	SoldPrice float64    `csv:"HB.sold_price"`
-	SoldDate  types.Date `csv:"HB.sold_date|HB.sold_time"`
-	SoldNotes string     `csv:"HB.sold_notes"`
-
 	Fields []ExportItemFields `csv:"-"`
 }
 

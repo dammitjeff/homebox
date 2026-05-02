@@ -38,7 +38,6 @@
   import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
   import TagChip from "~/components/Tag/Chip.vue";
   import DateTime from "~/components/global/DateTime.vue";
-  import LabelMaker from "~/components/global/LabelMaker.vue";
   import Markdown from "~/components/global/Markdown.vue";
   import BaseCard from "@/components/Base/Card.vue";
   import CopyText from "@/components/global/CopyText.vue";
@@ -122,7 +121,6 @@
 
   type FilteredAttachments = {
     attachments: ItemAttachment[];
-    warranty: ItemAttachment[];
     manuals: ItemAttachment[];
     receipts: ItemAttachment[];
   };
@@ -167,7 +165,6 @@
       return {
         attachments: [],
         manuals: [],
-        warranty: [],
         receipts: [],
       };
     }
@@ -177,9 +174,7 @@
         if (attachment.type === "photo") {
           return acc;
         }
-        if (attachment.type === "warranty") {
-          acc.warranty.push(attachment);
-        } else if (attachment.type === "manual") {
+        if (attachment.type === "manual") {
           acc.manuals.push(attachment);
         } else if (attachment.type === "receipt") {
           acc.receipts.push(attachment);
@@ -190,7 +185,6 @@
       },
       {
         attachments: [] as ItemAttachment[],
-        warranty: [] as ItemAttachment[],
         manuals: [] as ItemAttachment[],
         receipts: [] as ItemAttachment[],
       }
@@ -289,7 +283,6 @@
 
     return (
       attachments.value.attachments.length > 0 ||
-      attachments.value.warranty.length > 0 ||
       attachments.value.manuals.length > 0 ||
       attachments.value.receipts.length > 0
     );
@@ -310,58 +303,12 @@
       push("items.attachments", "attachments");
     }
 
-    if (attachments.value.warranty.length > 0) {
-      push("items.warranty", "warranty");
-    }
-
     if (attachments.value.manuals.length > 0) {
       push("items.manuals", "manuals");
     }
 
     if (attachments.value.receipts.length > 0) {
       push("items.receipts", "receipts");
-    }
-
-    return details;
-  });
-
-  const showWarranty = computed(() => {
-    if (preferences.value.showEmpty) {
-      return true;
-    }
-    return item.value?.lifetimeWarranty || validDate(item.value?.warrantyExpires);
-  });
-
-  const warrantyDetails = computed(() => {
-    const details: Details = [
-      {
-        name: "items.lifetime_warranty",
-        text: item.value?.lifetimeWarranty ? "Yes" : "No",
-      },
-    ];
-
-    if (item.value?.lifetimeWarranty) {
-      details.push({
-        name: "items.warranty_expires",
-        text: "N/A",
-      });
-    } else {
-      details.push({
-        name: "items.warranty_expires",
-        text: item.value?.warrantyExpires || "",
-        type: "date",
-        date: true,
-      });
-    }
-
-    details.push({
-      name: "items.warranty_details",
-      type: "markdown",
-      text: item.value?.warrantyDetails || "",
-    });
-
-    if (!preferences.value.showEmpty) {
-      return filterZeroValues(details);
     }
 
     return details;
@@ -388,39 +335,6 @@
       {
         name: "items.purchase_date",
         text: item.value?.purchaseDate || "",
-        type: "date",
-        date: true,
-      },
-    ];
-
-    if (!preferences.value.showEmpty) {
-      return filterZeroValues(v);
-    }
-
-    return v;
-  });
-
-  const showSold = computed(() => {
-    if (preferences.value.showEmpty) {
-      return true;
-    }
-    return item.value?.soldTo || item.value?.soldPrice !== 0 || validDate(item.value?.soldDate);
-  });
-
-  const soldDetails = computed<Details>(() => {
-    const v: Details = [
-      {
-        name: "items.sold_to",
-        text: item.value?.soldTo || "",
-      },
-      {
-        name: "items.sold_price",
-        text: String(item.value?.soldPrice) || "",
-        type: "currency",
-      },
-      {
-        name: "items.sold_at",
-        text: item.value?.soldDate || "",
         type: "date",
         date: true,
       },
@@ -571,53 +485,6 @@
     navigateTo("/home");
   }
 
-  async function saveAsTemplate() {
-    if (!item.value) {
-      return;
-    }
-
-    const NIL_UUID = "00000000-0000-0000-0000-000000000000";
-
-    // Create template from item data
-    const templateData = {
-      name: `Template: ${item.value.name}`,
-      description: "",
-      notes: "",
-      defaultName: item.value.name,
-      defaultDescription: item.value.description || "",
-      defaultQuantity: item.value.quantity,
-      defaultInsured: item.value.insured,
-      defaultManufacturer: item.value.manufacturer || "",
-      defaultModelNumber: item.value.modelNumber || "",
-      defaultLifetimeWarranty: item.value.lifetimeWarranty,
-      defaultWarrantyDetails: item.value.warrantyDetails || "",
-      defaultLocationId: item.value.location?.id || item.value.parent?.id || "",
-      defaultTagIds: item.value.tags?.map(l => l.id) || [],
-      includeWarrantyFields: !!(
-        item.value.warrantyDetails ||
-        item.value.lifetimeWarranty ||
-        item.value.warrantyExpires
-      ),
-      includePurchaseFields: !!(item.value.purchaseFrom || item.value.purchasePrice || item.value.purchaseDate),
-      includeSoldFields: !!(item.value.soldTo || item.value.soldPrice || item.value.soldDate),
-      fields: item.value.fields.map(field => ({
-        id: NIL_UUID,
-        name: field.name,
-        type: "text",
-        textValue: field.textValue || "",
-      })),
-    };
-
-    const { data, error } = await api.templates.create(templateData);
-    if (error) {
-      toast.error(t("components.template.toast.create_failed"));
-      return;
-    }
-
-    toast.success(t("components.template.toast.saved_as_template", { name: templateData.name }));
-    navigateTo(`/template/${data.id}`);
-  }
-
   async function createSubitem() {
     // setting URL Parameter that is read and immidiately removed in the Item-CreateModal
     await router.push({
@@ -703,12 +570,6 @@
               </div>
             </div>
             <div class="ml-auto mt-2 flex flex-wrap items-center justify-between gap-2">
-              <LabelMaker
-                v-if="typeof item.assetId === 'string' && item.assetId != ''"
-                :id="item.assetId"
-                type="asset"
-              />
-              <LabelMaker v-else :id="item.id" type="item" />
               <Button class="w-9 md:w-auto" :aria-label="$t('global.create_subitem')" @click="createSubitem">
                 <MdiPlus />
                 <span class="hidden md:inline">{{ $t("global.create_subitem") }}</span>
@@ -725,10 +586,6 @@
                   <DropdownMenuItem @click="handleDuplicateClick">
                     <MdiPlusBoxMultipleOutline class="mr-2 size-4" />
                     {{ $t("global.duplicate") }}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem @click="saveAsTemplate">
-                    <MdiContentSaveEdit class="mr-2 size-4" />
-                    {{ $t("components.template.save_as_template") }}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem class="text-destructive focus:text-destructive" @click="deleteItem">
@@ -832,13 +689,6 @@
                   :item-id="item.id"
                 />
               </template>
-              <template #warranty>
-                <ItemAttachmentsList
-                  v-if="attachments.warranty.length > 0"
-                  :attachments="attachments.warranty"
-                  :item-id="item.id"
-                />
-              </template>
               <template #receipts>
                 <ItemAttachmentsList
                   v-if="attachments.receipts.length > 0"
@@ -857,15 +707,6 @@
             <DetailsSection :details="purchaseDetails" />
           </BaseCard>
 
-          <BaseCard v-if="showWarranty" collapsable>
-            <template #title> {{ $t("items.warranty_details") }} </template>
-            <DetailsSection :details="warrantyDetails" />
-          </BaseCard>
-
-          <BaseCard v-if="showSold" collapsable>
-            <template #title> {{ $t("items.sold_details") }} </template>
-            <DetailsSection :details="soldDetails" />
-          </BaseCard>
         </template>
       </div>
     </section>

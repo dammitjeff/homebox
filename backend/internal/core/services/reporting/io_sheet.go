@@ -257,15 +257,6 @@ func (s *IOSheet) ReadItems(ctx context.Context, entities []repo.EntityOut, gid 
 			ModelNumber:  item.ModelNumber,
 			SerialNumber: item.SerialNumber,
 
-			LifetimeWarranty: item.LifetimeWarranty,
-			WarrantyExpires:  item.WarrantyExpires,
-			WarrantyDetails:  item.WarrantyDetails,
-
-			SoldTo:    item.SoldTo,
-			SoldDate:  item.SoldDate,
-			SoldPrice: item.SoldPrice,
-			SoldNotes: item.SoldNotes,
-
 			Notes:  item.Notes,
 			Fields: customFields,
 		}

@@ -19,35 +19,31 @@ type EntityTypeRepository struct {
 
 type (
 	EntityTypeCreate struct {
-		Name              string     `json:"name"`
-		IsLocation        bool       `json:"isLocation"`
-		Icon              string     `json:"icon"`
-		DefaultTemplateID *uuid.UUID `json:"defaultTemplateId,omitempty"`
+		Name       string `json:"name"`
+		IsLocation bool   `json:"isLocation"`
+		Icon       string `json:"icon"`
 	}
 
 	EntityTypeUpdate struct {
-		ID                uuid.UUID  `json:"id"`
-		Name              string     `json:"name"`
-		IsLocation        bool       `json:"isLocation"`
-		Icon              string     `json:"icon"`
-		DefaultTemplateID *uuid.UUID `json:"defaultTemplateId,omitempty"`
+		ID         uuid.UUID `json:"id"`
+		Name       string    `json:"name"`
+		IsLocation bool      `json:"isLocation"`
+		Icon       string    `json:"icon"`
 	}
 
 	EntityTypeSummary struct {
-		ID                uuid.UUID              `json:"id"`
-		Name              string                 `json:"name"`
-		Description       string                 `json:"description"`
-		IsLocation        bool                   `json:"isLocation"`
-		Icon              string                 `json:"icon"`
-		DefaultTemplateID *uuid.UUID             `json:"defaultTemplateId,omitempty"`
-		DefaultTemplate   *EntityTemplateSummary `json:"defaultTemplate,omitempty"`
-		CreatedAt         time.Time              `json:"createdAt"`
-		UpdatedAt         time.Time              `json:"updatedAt"`
+		ID          uuid.UUID `json:"id"`
+		Name        string    `json:"name"`
+		Description string    `json:"description"`
+		IsLocation  bool      `json:"isLocation"`
+		Icon        string    `json:"icon"`
+		CreatedAt   time.Time `json:"createdAt"`
+		UpdatedAt   time.Time `json:"updatedAt"`
 	}
 )
 
 func mapEntityTypeSummary(et *ent.EntityType) EntityTypeSummary {
-	s := EntityTypeSummary{
+	return EntityTypeSummary{
 		ID:          et.ID,
 		Name:        et.Name,
 		Description: et.Description,
@@ -56,22 +52,6 @@ func mapEntityTypeSummary(et *ent.EntityType) EntityTypeSummary {
 		CreatedAt:   et.CreatedAt,
 		UpdatedAt:   et.UpdatedAt,
 	}
-
-	if et.Edges.DefaultTemplate != nil {
-		tmpl := et.Edges.DefaultTemplate
-		id := tmpl.ID
-		s.DefaultTemplateID = &id
-		summary := EntityTemplateSummary{
-			ID:          tmpl.ID,
-			Name:        tmpl.Name,
-			Description: tmpl.Description,
-			CreatedAt:   tmpl.CreatedAt,
-			UpdatedAt:   tmpl.UpdatedAt,
-		}
-		s.DefaultTemplate = &summary
-	}
-
-	return s
 }
 
 func (r *EntityTypeRepository) publishMutationEvent(gid uuid.UUID) {
@@ -84,7 +64,6 @@ func (r *EntityTypeRepository) publishMutationEvent(gid uuid.UUID) {
 func (r *EntityTypeRepository) GetAll(ctx context.Context, gid uuid.UUID) ([]EntityTypeSummary, error) {
 	types, err := r.db.EntityType.Query().
 		Where(entitytype.HasGroupWith(group.ID(gid))).
-		WithDefaultTemplate().
 		Order(entitytype.ByName()).
 		All(ctx)
 	if err != nil {
@@ -98,17 +77,12 @@ func (r *EntityTypeRepository) GetAll(ctx context.Context, gid uuid.UUID) ([]Ent
 
 // Create creates a new entity type for a group.
 func (r *EntityTypeRepository) Create(ctx context.Context, gid uuid.UUID, data EntityTypeCreate) (EntityTypeSummary, error) {
-	q := r.db.EntityType.Create().
+	et, err := r.db.EntityType.Create().
 		SetName(data.Name).
 		SetIsLocation(data.IsLocation).
 		SetIcon(data.Icon).
-		SetGroupID(gid)
-
-	if data.DefaultTemplateID != nil && *data.DefaultTemplateID != uuid.Nil {
-		q.SetDefaultTemplateID(*data.DefaultTemplateID)
-	}
-
-	et, err := q.Save(ctx)
+		SetGroupID(gid).
+		Save(ctx)
 	if err != nil {
 		return EntityTypeSummary{}, err
 	}
@@ -119,29 +93,21 @@ func (r *EntityTypeRepository) Create(ctx context.Context, gid uuid.UUID, data E
 
 // Update updates an existing entity type.
 func (r *EntityTypeRepository) Update(ctx context.Context, gid uuid.UUID, data EntityTypeUpdate) (EntityTypeSummary, error) {
-	q := r.db.EntityType.Update().
+	_, err := r.db.EntityType.Update().
 		Where(
 			entitytype.ID(data.ID),
 			entitytype.HasGroupWith(group.ID(gid)),
 		).
 		SetName(data.Name).
 		SetIsLocation(data.IsLocation).
-		SetIcon(data.Icon)
-
-	if data.DefaultTemplateID != nil && *data.DefaultTemplateID != uuid.Nil {
-		q.SetDefaultTemplateID(*data.DefaultTemplateID)
-	} else {
-		q.ClearDefaultTemplate()
-	}
-
-	_, err := q.Save(ctx)
+		SetIcon(data.Icon).
+		Save(ctx)
 	if err != nil {
 		return EntityTypeSummary{}, err
 	}
 
 	et, err := r.db.EntityType.Query().
 		Where(entitytype.ID(data.ID)).
-		WithDefaultTemplate().
 		Only(ctx)
 	if err != nil {
 		return EntityTypeSummary{}, err
@@ -174,7 +140,6 @@ func (r *EntityTypeRepository) GetDefault(ctx context.Context, gid uuid.UUID, is
 			entitytype.HasGroupWith(group.ID(gid)),
 			entitytype.IsLocation(isLocation),
 		).
-		WithDefaultTemplate().
 		Order(entitytype.ByCreatedAt()).
 		First(ctx)
 	if err != nil {

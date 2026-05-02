@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
-	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytemplate"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytype"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/group"
 )
@@ -34,10 +33,9 @@ type EntityType struct {
 	Icon string `json:"icon,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EntityTypeQuery when eager-loading is set.
-	Edges                        EntityTypeEdges `json:"edges"`
-	entity_type_default_template *uuid.UUID
-	group_entity_types           *uuid.UUID
-	selectValues                 sql.SelectValues
+	Edges              EntityTypeEdges `json:"edges"`
+	group_entity_types *uuid.UUID
+	selectValues       sql.SelectValues
 }
 
 // EntityTypeEdges holds the relations/edges for other nodes in the graph.
@@ -46,11 +44,9 @@ type EntityTypeEdges struct {
 	Group *Group `json:"group,omitempty"`
 	// Entities holds the value of the entities edge.
 	Entities []*Entity `json:"entities,omitempty"`
-	// DefaultTemplate holds the value of the default_template edge.
-	DefaultTemplate *EntityTemplate `json:"default_template,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [2]bool
 }
 
 // GroupOrErr returns the Group value or an error if the edge
@@ -73,17 +69,6 @@ func (e EntityTypeEdges) EntitiesOrErr() ([]*Entity, error) {
 	return nil, &NotLoadedError{edge: "entities"}
 }
 
-// DefaultTemplateOrErr returns the DefaultTemplate value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e EntityTypeEdges) DefaultTemplateOrErr() (*EntityTemplate, error) {
-	if e.DefaultTemplate != nil {
-		return e.DefaultTemplate, nil
-	} else if e.loadedTypes[2] {
-		return nil, &NotFoundError{label: entitytemplate.Label}
-	}
-	return nil, &NotLoadedError{edge: "default_template"}
-}
-
 // scanValues returns the types for scanning values from sql.Rows.
 func (*EntityType) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -97,9 +82,7 @@ func (*EntityType) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullTime)
 		case entitytype.FieldID:
 			values[i] = new(uuid.UUID)
-		case entitytype.ForeignKeys[0]: // entity_type_default_template
-			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
-		case entitytype.ForeignKeys[1]: // group_entity_types
+		case entitytype.ForeignKeys[0]: // group_entity_types
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
@@ -160,13 +143,6 @@ func (_m *EntityType) assignValues(columns []string, values []any) error {
 			}
 		case entitytype.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
-				return fmt.Errorf("unexpected type %T for field entity_type_default_template", values[i])
-			} else if value.Valid {
-				_m.entity_type_default_template = new(uuid.UUID)
-				*_m.entity_type_default_template = *value.S.(*uuid.UUID)
-			}
-		case entitytype.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field group_entity_types", values[i])
 			} else if value.Valid {
 				_m.group_entity_types = new(uuid.UUID)
@@ -193,11 +169,6 @@ func (_m *EntityType) QueryGroup() *GroupQuery {
 // QueryEntities queries the "entities" edge of the EntityType entity.
 func (_m *EntityType) QueryEntities() *EntityQuery {
 	return NewEntityTypeClient(_m.config).QueryEntities(_m)
-}
-
-// QueryDefaultTemplate queries the "default_template" edge of the EntityType entity.
-func (_m *EntityType) QueryDefaultTemplate() *EntityTemplateQuery {
-	return NewEntityTypeClient(_m.config).QueryDefaultTemplate(_m)
 }
 
 // Update returns a builder for updating this EntityType.

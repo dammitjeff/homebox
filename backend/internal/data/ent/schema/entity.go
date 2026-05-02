@@ -69,16 +69,6 @@ func (Entity) Fields() []ent.Field {
 			Optional(),
 
 		// ------------------------------------
-		// Item Warranty
-		field.Bool("lifetime_warranty").
-			Default(false),
-		field.Time("warranty_expires").
-			Optional(),
-		field.Text("warranty_details").
-			MaxLen(1000).
-			Optional(),
-
-		// ------------------------------------
 		// item purchase
 		field.Time("purchase_date").
 			Optional(),
@@ -86,18 +76,6 @@ func (Entity) Fields() []ent.Field {
 			Optional(),
 		field.Float("purchase_price").
 			Default(0),
-
-		// ------------------------------------
-		// Sold Details
-		field.Time("sold_date").
-			Optional(),
-		field.String("sold_to").
-			Optional(),
-		field.Float("sold_price").
-			Default(0),
-		field.String("sold_notes").
-			MaxLen(1000).
-			Optional(),
 	}
 }
 

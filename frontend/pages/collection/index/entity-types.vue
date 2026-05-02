@@ -5,7 +5,6 @@
     EntityTypeCreate,
     EntityTypeSummary,
     EntityTypeUpdate,
-    EntityTemplateSummary,
   } from "~~/lib/api/types/data-contracts";
   import MdiPlus from "~icons/mdi/plus";
   import MdiPencil from "~icons/mdi/pencil";
@@ -27,7 +26,6 @@
   import { DialogID } from "~/components/ui/dialog-provider/utils";
   import FormTextField from "~/components/Form/TextField.vue";
   import FormCheckbox from "~/components/Form/Checkbox.vue";
-  import TemplateSelector from "~/components/Template/Selector.vue";
 
   const { t } = useI18n();
   const api = useUserApi();
@@ -49,13 +47,11 @@
     icon: "",
     isLocation: false,
   });
-  const createTemplate = ref<EntityTemplateSummary | null>(null);
 
   function resetCreateForm() {
     createForm.name = "";
     createForm.icon = "";
     createForm.isLocation = false;
-    createTemplate.value = null;
   }
 
   async function create() {
@@ -68,7 +64,6 @@
       name: createForm.name,
       icon: createForm.icon,
       isLocation: createForm.isLocation,
-      ...(createTemplate.value?.id ? { defaultTemplateId: createTemplate.value.id } : {}),
     } as EntityTypeCreate;
 
     const { error } = await api.entityTypes.create(payload);
@@ -90,16 +85,12 @@
     icon: "",
     isLocation: false,
   });
-  const updateTemplate = ref<EntityTemplateSummary | null>(null);
 
   function openEdit(et: EntityTypeSummary) {
     updateForm.id = et.id;
     updateForm.name = et.name;
     updateForm.icon = et.icon;
     updateForm.isLocation = et.isLocation;
-    updateTemplate.value = et.defaultTemplate
-      ? { id: et.defaultTemplate.id, name: et.defaultTemplate.name, description: et.defaultTemplate.description } as EntityTemplateSummary
-      : null;
     openDialog(DialogID.UpdateEntityType);
   }
 
@@ -114,7 +105,6 @@
       name: updateForm.name,
       icon: updateForm.icon,
       isLocation: updateForm.isLocation,
-      ...(updateTemplate.value?.id ? { defaultTemplateId: updateTemplate.value.id } : {}),
     } as EntityTypeUpdate;
 
     const { error } = await api.entityTypes.update(updateForm.id, payload);
@@ -162,7 +152,6 @@
             :min-length="1"
           />
           <FormCheckbox v-model="createForm.isLocation" label="Is a container / location type" />
-          <TemplateSelector v-model="createTemplate" />
 
           <DialogFooter>
             <Button type="submit">Create</Button>
@@ -186,7 +175,6 @@
             :min-length="1"
           />
           <FormCheckbox v-model="updateForm.isLocation" label="Is a container / location type" />
-          <TemplateSelector v-model="updateTemplate" />
 
           <DialogFooter>
             <Button type="submit">Update</Button>
@@ -217,9 +205,6 @@
               <span class="font-medium">{{ et.name }}</span>
               <Badge v-if="et.isLocation" variant="secondary" class="text-xs">Container</Badge>
             </div>
-            <p v-if="et.defaultTemplate" class="text-xs text-muted-foreground">
-              Default template: {{ et.defaultTemplate.name }}
-            </p>
           </div>
 
           <TooltipProvider :delay-duration="0">

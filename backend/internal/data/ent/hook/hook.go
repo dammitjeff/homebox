@@ -69,18 +69,6 @@ func (f EntityFieldFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value,
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EntityFieldMutation", m)
 }
 
-// The EntityTemplateFunc type is an adapter to allow the use of ordinary
-// function as EntityTemplate mutator.
-type EntityTemplateFunc func(context.Context, *ent.EntityTemplateMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f EntityTemplateFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.EntityTemplateMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EntityTemplateMutation", m)
-}
-
 // The EntityTypeFunc type is an adapter to allow the use of ordinary
 // function as EntityType mutator.
 type EntityTypeFunc func(context.Context, *ent.EntityTypeMutation) (ent.Value, error)
@@ -151,18 +139,6 @@ func (f TagFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) 
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TagMutation", m)
-}
-
-// The TemplateFieldFunc type is an adapter to allow the use of ordinary
-// function as TemplateField mutator.
-type TemplateFieldFunc func(context.Context, *ent.TemplateFieldMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f TemplateFieldFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.TemplateFieldMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TemplateFieldMutation", m)
 }
 
 // The UserFunc type is an adapter to allow the use of ordinary

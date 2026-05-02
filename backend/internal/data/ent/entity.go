@@ -50,26 +50,12 @@ type Entity struct {
 	ModelNumber string `json:"model_number,omitempty"`
 	// Manufacturer holds the value of the "manufacturer" field.
 	Manufacturer string `json:"manufacturer,omitempty"`
-	// LifetimeWarranty holds the value of the "lifetime_warranty" field.
-	LifetimeWarranty bool `json:"lifetime_warranty,omitempty"`
-	// WarrantyExpires holds the value of the "warranty_expires" field.
-	WarrantyExpires time.Time `json:"warranty_expires,omitempty"`
-	// WarrantyDetails holds the value of the "warranty_details" field.
-	WarrantyDetails string `json:"warranty_details,omitempty"`
 	// PurchaseDate holds the value of the "purchase_date" field.
 	PurchaseDate time.Time `json:"purchase_date,omitempty"`
 	// PurchaseFrom holds the value of the "purchase_from" field.
 	PurchaseFrom string `json:"purchase_from,omitempty"`
 	// PurchasePrice holds the value of the "purchase_price" field.
 	PurchasePrice float64 `json:"purchase_price,omitempty"`
-	// SoldDate holds the value of the "sold_date" field.
-	SoldDate time.Time `json:"sold_date,omitempty"`
-	// SoldTo holds the value of the "sold_to" field.
-	SoldTo string `json:"sold_to,omitempty"`
-	// SoldPrice holds the value of the "sold_price" field.
-	SoldPrice float64 `json:"sold_price,omitempty"`
-	// SoldNotes holds the value of the "sold_notes" field.
-	SoldNotes string `json:"sold_notes,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EntityQuery when eager-loading is set.
 	Edges                EntityEdges `json:"edges"`
@@ -185,15 +171,15 @@ func (*Entity) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case entity.FieldInsured, entity.FieldArchived, entity.FieldSyncChildEntityLocations, entity.FieldLifetimeWarranty:
+		case entity.FieldInsured, entity.FieldArchived, entity.FieldSyncChildEntityLocations:
 			values[i] = new(sql.NullBool)
-		case entity.FieldQuantity, entity.FieldPurchasePrice, entity.FieldSoldPrice:
+		case entity.FieldQuantity, entity.FieldPurchasePrice:
 			values[i] = new(sql.NullFloat64)
 		case entity.FieldAssetID:
 			values[i] = new(sql.NullInt64)
-		case entity.FieldName, entity.FieldDescription, entity.FieldImportRef, entity.FieldNotes, entity.FieldStatus, entity.FieldSerialNumber, entity.FieldModelNumber, entity.FieldManufacturer, entity.FieldWarrantyDetails, entity.FieldPurchaseFrom, entity.FieldSoldTo, entity.FieldSoldNotes:
+		case entity.FieldName, entity.FieldDescription, entity.FieldImportRef, entity.FieldNotes, entity.FieldStatus, entity.FieldSerialNumber, entity.FieldModelNumber, entity.FieldManufacturer, entity.FieldPurchaseFrom:
 			values[i] = new(sql.NullString)
-		case entity.FieldCreatedAt, entity.FieldUpdatedAt, entity.FieldWarrantyExpires, entity.FieldPurchaseDate, entity.FieldSoldDate:
+		case entity.FieldCreatedAt, entity.FieldUpdatedAt, entity.FieldPurchaseDate:
 			values[i] = new(sql.NullTime)
 		case entity.FieldID:
 			values[i] = new(uuid.UUID)
@@ -314,24 +300,6 @@ func (_m *Entity) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Manufacturer = value.String
 			}
-		case entity.FieldLifetimeWarranty:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field lifetime_warranty", values[i])
-			} else if value.Valid {
-				_m.LifetimeWarranty = value.Bool
-			}
-		case entity.FieldWarrantyExpires:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field warranty_expires", values[i])
-			} else if value.Valid {
-				_m.WarrantyExpires = value.Time
-			}
-		case entity.FieldWarrantyDetails:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field warranty_details", values[i])
-			} else if value.Valid {
-				_m.WarrantyDetails = value.String
-			}
 		case entity.FieldPurchaseDate:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field purchase_date", values[i])
@@ -349,30 +317,6 @@ func (_m *Entity) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field purchase_price", values[i])
 			} else if value.Valid {
 				_m.PurchasePrice = value.Float64
-			}
-		case entity.FieldSoldDate:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field sold_date", values[i])
-			} else if value.Valid {
-				_m.SoldDate = value.Time
-			}
-		case entity.FieldSoldTo:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field sold_to", values[i])
-			} else if value.Valid {
-				_m.SoldTo = value.String
-			}
-		case entity.FieldSoldPrice:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
-				return fmt.Errorf("unexpected type %T for field sold_price", values[i])
-			} else if value.Valid {
-				_m.SoldPrice = value.Float64
-			}
-		case entity.FieldSoldNotes:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field sold_notes", values[i])
-			} else if value.Valid {
-				_m.SoldNotes = value.String
 			}
 		case entity.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
@@ -516,15 +460,6 @@ func (_m *Entity) String() string {
 	builder.WriteString("manufacturer=")
 	builder.WriteString(_m.Manufacturer)
 	builder.WriteString(", ")
-	builder.WriteString("lifetime_warranty=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LifetimeWarranty))
-	builder.WriteString(", ")
-	builder.WriteString("warranty_expires=")
-	builder.WriteString(_m.WarrantyExpires.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("warranty_details=")
-	builder.WriteString(_m.WarrantyDetails)
-	builder.WriteString(", ")
 	builder.WriteString("purchase_date=")
 	builder.WriteString(_m.PurchaseDate.Format(time.ANSIC))
 	builder.WriteString(", ")
@@ -533,18 +468,6 @@ func (_m *Entity) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("purchase_price=")
 	builder.WriteString(fmt.Sprintf("%v", _m.PurchasePrice))
-	builder.WriteString(", ")
-	builder.WriteString("sold_date=")
-	builder.WriteString(_m.SoldDate.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("sold_to=")
-	builder.WriteString(_m.SoldTo)
-	builder.WriteString(", ")
-	builder.WriteString("sold_price=")
-	builder.WriteString(fmt.Sprintf("%v", _m.SoldPrice))
-	builder.WriteString(", ")
-	builder.WriteString("sold_notes=")
-	builder.WriteString(_m.SoldNotes)
 	builder.WriteByte(')')
 	return builder.String()
 }

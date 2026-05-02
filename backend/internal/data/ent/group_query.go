@@ -14,7 +14,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entity"
-	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytemplate"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytype"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/group"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/groupinvitationtoken"
@@ -37,7 +36,6 @@ type GroupQuery struct {
 	withTags             *TagQuery
 	withInvitationTokens *GroupInvitationTokenQuery
 	withNotifiers        *NotifierQuery
-	withEntityTemplates  *EntityTemplateQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -199,28 +197,6 @@ func (_q *GroupQuery) QueryNotifiers() *NotifierQuery {
 			sqlgraph.From(group.Table, group.FieldID, selector),
 			sqlgraph.To(notifier.Table, notifier.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, group.NotifiersTable, group.NotifiersColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryEntityTemplates chains the current query on the "entity_templates" edge.
-func (_q *GroupQuery) QueryEntityTemplates() *EntityTemplateQuery {
-	query := (&EntityTemplateClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(group.Table, group.FieldID, selector),
-			sqlgraph.To(entitytemplate.Table, entitytemplate.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, group.EntityTemplatesTable, group.EntityTemplatesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -426,7 +402,6 @@ func (_q *GroupQuery) Clone() *GroupQuery {
 		withTags:             _q.withTags.Clone(),
 		withInvitationTokens: _q.withInvitationTokens.Clone(),
 		withNotifiers:        _q.withNotifiers.Clone(),
-		withEntityTemplates:  _q.withEntityTemplates.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -496,17 +471,6 @@ func (_q *GroupQuery) WithNotifiers(opts ...func(*NotifierQuery)) *GroupQuery {
 		opt(query)
 	}
 	_q.withNotifiers = query
-	return _q
-}
-
-// WithEntityTemplates tells the query-builder to eager-load the nodes that are connected to
-// the "entity_templates" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *GroupQuery) WithEntityTemplates(opts ...func(*EntityTemplateQuery)) *GroupQuery {
-	query := (&EntityTemplateClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withEntityTemplates = query
 	return _q
 }
 
@@ -588,14 +552,13 @@ func (_q *GroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Group,
 	var (
 		nodes       = []*Group{}
 		_spec       = _q.querySpec()
-		loadedTypes = [7]bool{
+		loadedTypes = [6]bool{
 			_q.withUsers != nil,
 			_q.withEntityTypes != nil,
 			_q.withEntities != nil,
 			_q.withTags != nil,
 			_q.withInvitationTokens != nil,
 			_q.withNotifiers != nil,
-			_q.withEntityTemplates != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -657,13 +620,6 @@ func (_q *GroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Group,
 		if err := _q.loadNotifiers(ctx, query, nodes,
 			func(n *Group) { n.Edges.Notifiers = []*Notifier{} },
 			func(n *Group, e *Notifier) { n.Edges.Notifiers = append(n.Edges.Notifiers, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := _q.withEntityTemplates; query != nil {
-		if err := _q.loadEntityTemplates(ctx, query, nodes,
-			func(n *Group) { n.Edges.EntityTemplates = []*EntityTemplate{} },
-			func(n *Group, e *EntityTemplate) { n.Edges.EntityTemplates = append(n.Edges.EntityTemplates, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -880,37 +836,6 @@ func (_q *GroupQuery) loadNotifiers(ctx context.Context, query *NotifierQuery, n
 		node, ok := nodeids[fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "group_id" returned %v for node %v`, fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (_q *GroupQuery) loadEntityTemplates(ctx context.Context, query *EntityTemplateQuery, nodes []*Group, init func(*Group), assign func(*Group, *EntityTemplate)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[uuid.UUID]*Group)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	query.withFKs = true
-	query.Where(predicate.EntityTemplate(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(group.EntityTemplatesColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.group_entity_templates
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "group_entity_templates" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "group_entity_templates" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

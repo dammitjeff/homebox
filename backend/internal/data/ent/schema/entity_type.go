@@ -39,7 +39,5 @@ func (EntityType) Edges() []ent.Edge {
 			Annotations(entsql.Annotation{
 				OnDelete: entsql.Restrict,
 			}),
-		edge.To("default_template", EntityTemplate.Type).
-			Unique(),
 	}
 }

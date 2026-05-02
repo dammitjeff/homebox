@@ -424,29 +424,6 @@ func HasNotifiersWith(preds ...predicate.Notifier) predicate.Group {
 	})
 }
 
-// HasEntityTemplates applies the HasEdge predicate on the "entity_templates" edge.
-func HasEntityTemplates() predicate.Group {
-	return predicate.Group(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, EntityTemplatesTable, EntityTemplatesColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasEntityTemplatesWith applies the HasEdge predicate on the "entity_templates" edge with a given conditions (other predicates).
-func HasEntityTemplatesWith(preds ...predicate.EntityTemplate) predicate.Group {
-	return predicate.Group(func(s *sql.Selector) {
-		step := newEntityTemplatesStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Group) predicate.Group {
 	return predicate.Group(sql.AndPredicates(predicates...))

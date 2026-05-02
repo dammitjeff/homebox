@@ -437,29 +437,6 @@ func HasEntitiesWith(preds ...predicate.Entity) predicate.EntityType {
 	})
 }
 
-// HasDefaultTemplate applies the HasEdge predicate on the "default_template" edge.
-func HasDefaultTemplate() predicate.EntityType {
-	return predicate.EntityType(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, DefaultTemplateTable, DefaultTemplateColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasDefaultTemplateWith applies the HasEdge predicate on the "default_template" edge with a given conditions (other predicates).
-func HasDefaultTemplateWith(preds ...predicate.EntityTemplate) predicate.EntityType {
-	return predicate.EntityType(func(s *sql.Selector) {
-		step := newDefaultTemplateStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.EntityType) predicate.EntityType {
 	return predicate.EntityType(sql.AndPredicates(predicates...))

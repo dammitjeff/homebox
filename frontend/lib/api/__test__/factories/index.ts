@@ -4,7 +4,6 @@ import { overrideParts } from "../../base/urls";
 import { PublicApi } from "../../public";
 import type {
   EntityFieldData,
-  EntityTemplateCreate,
   TagCreate,
   EntityCreate,
   UserRegistration,
@@ -55,28 +54,6 @@ function tag(): TagCreate {
   };
 }
 
-function template(): EntityTemplateCreate {
-  return {
-    name: faker.lorem.words(2),
-    description: faker.lorem.sentence(),
-    notes: "",
-    defaultQuantity: 1,
-    defaultInsured: false,
-    defaultName: faker.lorem.word(),
-    defaultDescription: faker.lorem.sentence(),
-    defaultManufacturer: faker.company.name(),
-    defaultModelNumber: faker.string.alphanumeric(10),
-    defaultLifetimeWarranty: false,
-    defaultWarrantyDetails: "",
-    defaultLocationId: null,
-    defaultTagIds: null,
-    includeWarrantyFields: false,
-    includePurchaseFields: false,
-    includeSoldFields: false,
-    fields: [],
-  };
-}
-
 function publicClient(): PublicApi {
   overrideParts(config.BASE_URL, "/api/v1");
   const requests = new Requests("");
@@ -114,7 +91,6 @@ export const factories = {
   user,
   location,
   tag,
-  template,
   itemField,
   client: {
     public: publicClient,

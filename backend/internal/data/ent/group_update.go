@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entity"
-	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytemplate"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytype"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/group"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/groupinvitationtoken"
@@ -160,21 +159,6 @@ func (_u *GroupUpdate) AddNotifiers(v ...*Notifier) *GroupUpdate {
 	return _u.AddNotifierIDs(ids...)
 }
 
-// AddEntityTemplateIDs adds the "entity_templates" edge to the EntityTemplate entity by IDs.
-func (_u *GroupUpdate) AddEntityTemplateIDs(ids ...uuid.UUID) *GroupUpdate {
-	_u.mutation.AddEntityTemplateIDs(ids...)
-	return _u
-}
-
-// AddEntityTemplates adds the "entity_templates" edges to the EntityTemplate entity.
-func (_u *GroupUpdate) AddEntityTemplates(v ...*EntityTemplate) *GroupUpdate {
-	ids := make([]uuid.UUID, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddEntityTemplateIDs(ids...)
-}
-
 // Mutation returns the GroupMutation object of the builder.
 func (_u *GroupUpdate) Mutation() *GroupMutation {
 	return _u.mutation
@@ -304,27 +288,6 @@ func (_u *GroupUpdate) RemoveNotifiers(v ...*Notifier) *GroupUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveNotifierIDs(ids...)
-}
-
-// ClearEntityTemplates clears all "entity_templates" edges to the EntityTemplate entity.
-func (_u *GroupUpdate) ClearEntityTemplates() *GroupUpdate {
-	_u.mutation.ClearEntityTemplates()
-	return _u
-}
-
-// RemoveEntityTemplateIDs removes the "entity_templates" edge to EntityTemplate entities by IDs.
-func (_u *GroupUpdate) RemoveEntityTemplateIDs(ids ...uuid.UUID) *GroupUpdate {
-	_u.mutation.RemoveEntityTemplateIDs(ids...)
-	return _u
-}
-
-// RemoveEntityTemplates removes "entity_templates" edges to EntityTemplate entities.
-func (_u *GroupUpdate) RemoveEntityTemplates(v ...*EntityTemplate) *GroupUpdate {
-	ids := make([]uuid.UUID, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveEntityTemplateIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -664,51 +627,6 @@ func (_u *GroupUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.EntityTemplatesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   group.EntityTemplatesTable,
-			Columns: []string{group.EntityTemplatesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedEntityTemplatesIDs(); len(nodes) > 0 && !_u.mutation.EntityTemplatesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   group.EntityTemplatesTable,
-			Columns: []string{group.EntityTemplatesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.EntityTemplatesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   group.EntityTemplatesTable,
-			Columns: []string{group.EntityTemplatesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{group.Label}
@@ -853,21 +771,6 @@ func (_u *GroupUpdateOne) AddNotifiers(v ...*Notifier) *GroupUpdateOne {
 	return _u.AddNotifierIDs(ids...)
 }
 
-// AddEntityTemplateIDs adds the "entity_templates" edge to the EntityTemplate entity by IDs.
-func (_u *GroupUpdateOne) AddEntityTemplateIDs(ids ...uuid.UUID) *GroupUpdateOne {
-	_u.mutation.AddEntityTemplateIDs(ids...)
-	return _u
-}
-
-// AddEntityTemplates adds the "entity_templates" edges to the EntityTemplate entity.
-func (_u *GroupUpdateOne) AddEntityTemplates(v ...*EntityTemplate) *GroupUpdateOne {
-	ids := make([]uuid.UUID, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddEntityTemplateIDs(ids...)
-}
-
 // Mutation returns the GroupMutation object of the builder.
 func (_u *GroupUpdateOne) Mutation() *GroupMutation {
 	return _u.mutation
@@ -997,27 +900,6 @@ func (_u *GroupUpdateOne) RemoveNotifiers(v ...*Notifier) *GroupUpdateOne {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveNotifierIDs(ids...)
-}
-
-// ClearEntityTemplates clears all "entity_templates" edges to the EntityTemplate entity.
-func (_u *GroupUpdateOne) ClearEntityTemplates() *GroupUpdateOne {
-	_u.mutation.ClearEntityTemplates()
-	return _u
-}
-
-// RemoveEntityTemplateIDs removes the "entity_templates" edge to EntityTemplate entities by IDs.
-func (_u *GroupUpdateOne) RemoveEntityTemplateIDs(ids ...uuid.UUID) *GroupUpdateOne {
-	_u.mutation.RemoveEntityTemplateIDs(ids...)
-	return _u
-}
-
-// RemoveEntityTemplates removes "entity_templates" edges to EntityTemplate entities.
-func (_u *GroupUpdateOne) RemoveEntityTemplates(v ...*EntityTemplate) *GroupUpdateOne {
-	ids := make([]uuid.UUID, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveEntityTemplateIDs(ids...)
 }
 
 // Where appends a list predicates to the GroupUpdate builder.
@@ -1380,51 +1262,6 @@ func (_u *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error)
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(notifier.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.EntityTemplatesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   group.EntityTemplatesTable,
-			Columns: []string{group.EntityTemplatesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedEntityTemplatesIDs(); len(nodes) > 0 && !_u.mutation.EntityTemplatesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   group.EntityTemplatesTable,
-			Columns: []string{group.EntityTemplatesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.EntityTemplatesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   group.EntityTemplatesTable,
-			Columns: []string{group.EntityTemplatesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

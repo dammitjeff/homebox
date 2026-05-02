@@ -17,13 +17,6 @@ export enum UserRole {
   RoleOwner = "owner",
 }
 
-export enum TemplatefieldType {
-  TypeText = "text",
-  TypeNumber = "number",
-  TypeBoolean = "boolean",
-  TypeTime = "time",
-}
-
 export enum MaintenanceFilterStatus {
   MaintenanceFilterStatusScheduled = "scheduled",
   MaintenanceFilterStatusCompleted = "completed",
@@ -160,8 +153,6 @@ export interface EntEntity {
   import_ref: string;
   /** Insured holds the value of the "insured" field. */
   insured: boolean;
-  /** LifetimeWarranty holds the value of the "lifetime_warranty" field. */
-  lifetime_warranty: boolean;
   /** Manufacturer holds the value of the "manufacturer" field. */
   manufacturer: string;
   /** ModelNumber holds the value of the "model_number" field. */
@@ -180,22 +171,10 @@ export interface EntEntity {
   quantity: number;
   /** SerialNumber holds the value of the "serial_number" field. */
   serial_number: string;
-  /** SoldDate holds the value of the "sold_date" field. */
-  sold_date: Date | string;
-  /** SoldNotes holds the value of the "sold_notes" field. */
-  sold_notes: string;
-  /** SoldPrice holds the value of the "sold_price" field. */
-  sold_price: number;
-  /** SoldTo holds the value of the "sold_to" field. */
-  sold_to: string;
   /** SyncChildEntityLocations holds the value of the "sync_child_entity_locations" field. */
   sync_child_entity_locations: boolean;
   /** UpdatedAt holds the value of the "updated_at" field. */
   updated_at: string;
-  /** WarrantyDetails holds the value of the "warranty_details" field. */
-  warranty_details: string;
-  /** WarrantyExpires holds the value of the "warranty_expires" field. */
-  warranty_expires: string;
 }
 
 export interface EntEntityEdges {
@@ -250,59 +229,6 @@ export interface EntEntityFieldEdges {
   entity: EntEntity;
 }
 
-export interface EntEntityTemplate {
-  /** CreatedAt holds the value of the "created_at" field. */
-  created_at: string;
-  /** Default description for items created from this template */
-  default_description: string;
-  /** DefaultInsured holds the value of the "default_insured" field. */
-  default_insured: boolean;
-  /** DefaultLifetimeWarranty holds the value of the "default_lifetime_warranty" field. */
-  default_lifetime_warranty: boolean;
-  /** DefaultManufacturer holds the value of the "default_manufacturer" field. */
-  default_manufacturer: string;
-  /** Default model number for items created from this template */
-  default_model_number: string;
-  /** Default name template for items (can use placeholders) */
-  default_name: string;
-  /** DefaultQuantity holds the value of the "default_quantity" field. */
-  default_quantity: number;
-  /** Default tag IDs for items created from this template */
-  default_tag_ids: string[];
-  /** DefaultWarrantyDetails holds the value of the "default_warranty_details" field. */
-  default_warranty_details: string;
-  /** Description holds the value of the "description" field. */
-  description: string;
-  /**
-   * Edges holds the relations/edges for other nodes in the graph.
-   * The values are being populated by the EntityTemplateQuery when eager-loading is set.
-   */
-  edges: EntEntityTemplateEdges;
-  /** ID of the ent. */
-  id: string;
-  /** Whether to include purchase fields in items created from this template */
-  include_purchase_fields: boolean;
-  /** Whether to include sold fields in items created from this template */
-  include_sold_fields: boolean;
-  /** Whether to include warranty fields in items created from this template */
-  include_warranty_fields: boolean;
-  /** Name holds the value of the "name" field. */
-  name: string;
-  /** Notes holds the value of the "notes" field. */
-  notes: string;
-  /** UpdatedAt holds the value of the "updated_at" field. */
-  updated_at: string;
-}
-
-export interface EntEntityTemplateEdges {
-  /** Fields holds the value of the fields edge. */
-  fields: EntTemplateField[];
-  /** Group holds the value of the group edge. */
-  group: EntGroup;
-  /** Location holds the value of the location edge. */
-  location: EntEntity;
-}
-
 export interface EntEntityType {
   /** CreatedAt holds the value of the "created_at" field. */
   created_at: string;
@@ -326,8 +252,6 @@ export interface EntEntityType {
 }
 
 export interface EntEntityTypeEdges {
-  /** DefaultTemplate holds the value of the default_template edge. */
-  default_template: EntEntityTemplate;
   /** Entities holds the value of the entities edge. */
   entities: EntEntity[];
   /** Group holds the value of the group edge. */
@@ -355,8 +279,6 @@ export interface EntGroup {
 export interface EntGroupEdges {
   /** Entities holds the value of the entities edge. */
   entities: EntEntity[];
-  /** EntityTemplates holds the value of the entity_templates edge. */
-  entity_templates: EntEntityTemplate[];
   /** EntityTypes holds the value of the entity_types edge. */
   entity_types: EntEntityType[];
   /** InvitationTokens holds the value of the invitation_tokens edge. */
@@ -487,39 +409,6 @@ export interface EntTagEdges {
   parent: EntTag;
 }
 
-export interface EntTemplateField {
-  /** BooleanValue holds the value of the "boolean_value" field. */
-  boolean_value: boolean;
-  /** CreatedAt holds the value of the "created_at" field. */
-  created_at: string;
-  /** Description holds the value of the "description" field. */
-  description: string;
-  /**
-   * Edges holds the relations/edges for other nodes in the graph.
-   * The values are being populated by the TemplateFieldQuery when eager-loading is set.
-   */
-  edges: EntTemplateFieldEdges;
-  /** ID of the ent. */
-  id: string;
-  /** Name holds the value of the "name" field. */
-  name: string;
-  /** NumberValue holds the value of the "number_value" field. */
-  number_value: number;
-  /** TextValue holds the value of the "text_value" field. */
-  text_value: string;
-  /** TimeValue holds the value of the "time_value" field. */
-  time_value: string;
-  /** Type holds the value of the "type" field. */
-  type: TemplatefieldType;
-  /** UpdatedAt holds the value of the "updated_at" field. */
-  updated_at: string;
-}
-
-export interface EntTemplateFieldEdges {
-  /** EntityTemplate holds the value of the entity_template edge. */
-  entity_template: EntEntityTemplate;
-}
-
 export interface EntUser {
   /** ActivatedOn holds the value of the "activated_on" field. */
   activated_on: string;
@@ -633,8 +522,6 @@ export interface EntityOut {
   insured: boolean;
   /** Container-specific (populated when querying locations) */
   itemCount: number;
-  /** Warranty */
-  lifetimeWarranty: boolean;
   manufacturer: string;
   modelNumber: string;
   name: string;
@@ -648,18 +535,11 @@ export interface EntityOut {
   purchasePrice: number;
   quantity: number;
   serialNumber: string;
-  /** Sold */
-  soldDate: Date | string;
-  soldNotes: string;
-  soldPrice: number;
-  soldTo: string;
   syncChildEntityLocations: boolean;
   tags: TagSummary[];
   thumbnailId?: string | null;
   totalPrice: number;
   updatedAt: Date | string;
-  warrantyDetails: string;
-  warrantyExpires: Date | string;
 }
 
 export interface EntityPatch {
@@ -695,121 +575,12 @@ export interface EntitySummary {
   parent?: EntitySummary | null;
   purchasePrice: number;
   quantity: number;
-  /** Sale details */
-  soldDate: Date | string;
   tags: TagSummary[];
   thumbnailId?: string | null;
   updatedAt: Date | string;
 }
 
-export interface EntityTemplateCreate {
-  /** @maxLength 1000 */
-  defaultDescription?: string | null;
-  defaultInsured: boolean;
-  defaultLifetimeWarranty: boolean;
-  /** Default location and tags */
-  defaultLocationId?: string | null;
-  /** @maxLength 255 */
-  defaultManufacturer?: string | null;
-  /** @maxLength 255 */
-  defaultModelNumber?: string | null;
-  /** @maxLength 255 */
-  defaultName?: string | null;
-  /** Default values for entities */
-  defaultQuantity?: number | null;
-  defaultTagIds?: string[] | null;
-  /** @maxLength 1000 */
-  defaultWarrantyDetails?: string | null;
-  /** @maxLength 1000 */
-  description: string;
-  /** Custom fields */
-  fields: TemplateField[];
-  includePurchaseFields: boolean;
-  includeSoldFields: boolean;
-  /** Metadata flags */
-  includeWarrantyFields: boolean;
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-  /** @maxLength 1000 */
-  notes: string;
-}
-
-export interface EntityTemplateOut {
-  createdAt: Date | string;
-  defaultDescription: string;
-  defaultInsured: boolean;
-  defaultLifetimeWarranty: boolean;
-  /** Default location and tags */
-  defaultLocation: TemplateLocationSummary;
-  defaultManufacturer: string;
-  defaultModelNumber: string;
-  defaultName: string;
-  /** Default values for entities */
-  defaultQuantity: number;
-  defaultTags: TemplateTagSummary[];
-  defaultWarrantyDetails: string;
-  description: string;
-  /** Custom fields */
-  fields: TemplateField[];
-  id: string;
-  includePurchaseFields: boolean;
-  includeSoldFields: boolean;
-  /** Metadata flags */
-  includeWarrantyFields: boolean;
-  name: string;
-  notes: string;
-  updatedAt: Date | string;
-}
-
-export interface EntityTemplateSummary {
-  createdAt: Date | string;
-  description: string;
-  id: string;
-  name: string;
-  updatedAt: Date | string;
-}
-
-export interface EntityTemplateUpdate {
-  /** @maxLength 1000 */
-  defaultDescription?: string | null;
-  defaultInsured: boolean;
-  defaultLifetimeWarranty: boolean;
-  /** Default location and tags */
-  defaultLocationId?: string | null;
-  /** @maxLength 255 */
-  defaultManufacturer?: string | null;
-  /** @maxLength 255 */
-  defaultModelNumber?: string | null;
-  /** @maxLength 255 */
-  defaultName?: string | null;
-  /** Default values for entities */
-  defaultQuantity?: number | null;
-  defaultTagIds?: string[] | null;
-  /** @maxLength 1000 */
-  defaultWarrantyDetails?: string | null;
-  /** @maxLength 1000 */
-  description: string;
-  /** Custom fields */
-  fields: TemplateField[];
-  id: string;
-  includePurchaseFields: boolean;
-  includeSoldFields: boolean;
-  /** Metadata flags */
-  includeWarrantyFields: boolean;
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-  /** @maxLength 1000 */
-  notes: string;
-}
-
 export interface EntityTypeCreate {
-  defaultTemplateId: string;
   icon: string;
   isLocation: boolean;
   name: string;
@@ -817,8 +588,6 @@ export interface EntityTypeCreate {
 
 export interface EntityTypeSummary {
   createdAt: Date | string;
-  defaultTemplate: EntityTemplateSummary;
-  defaultTemplateId: string;
   description: string;
   icon: string;
   id: string;
@@ -828,7 +597,6 @@ export interface EntityTypeSummary {
 }
 
 export interface EntityTypeUpdate {
-  defaultTemplateId: string;
   icon: string;
   id: string;
   isLocation: boolean;
@@ -846,8 +614,6 @@ export interface EntityUpdate {
   fields: EntityFieldData[];
   id: string;
   insured: boolean;
-  /** Warranty */
-  lifetimeWarranty: boolean;
   manufacturer: string;
   modelNumber: string;
   /**
@@ -866,17 +632,9 @@ export interface EntityUpdate {
   quantity: number;
   /** Identifications */
   serialNumber: string;
-  /** Sold */
-  soldDate: Date | string;
-  soldNotes: string;
-  soldPrice?: number | null;
-  /** @maxLength 255 */
-  soldTo: string;
   syncChildEntityLocations: boolean;
   /** Edges */
   tagIds: string[];
-  warrantyDetails: string;
-  warrantyExpires: Date | string;
 }
 
 export interface Group {
@@ -1057,26 +815,6 @@ export interface TagUpdate {
   parentId?: string | null;
 }
 
-export interface TemplateField {
-  booleanValue: boolean;
-  id: string;
-  name: string;
-  numberValue: number;
-  textValue: string;
-  timeValue: string;
-  type: string;
-}
-
-export interface TemplateLocationSummary {
-  id: string;
-  name: string;
-}
-
-export interface TemplateTagSummary {
-  id: string;
-  name: string;
-}
-
 export interface TotalsByOrganizer {
   id: string;
   name: string;
@@ -1171,19 +909,6 @@ export interface ChangePassword {
 
 export interface CreateRequest {
   name: string;
-}
-
-export interface EntityTemplateCreateItemRequest {
-  /** @maxLength 1000 */
-  description: string;
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-  parentId: string;
-  quantity: number;
-  tagIds: string[];
 }
 
 export interface GroupAcceptInvitationResponse {

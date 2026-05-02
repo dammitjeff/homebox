@@ -122,21 +122,10 @@ type (
 		ModelNumber  string `json:"modelNumber"`
 		Manufacturer string `json:"manufacturer"`
 
-		// Warranty
-		LifetimeWarranty bool       `json:"lifetimeWarranty"`
-		WarrantyExpires  types.Date `json:"warrantyExpires"`
-		WarrantyDetails  string     `json:"warrantyDetails"`
-
 		// Purchase
 		PurchaseDate  types.Date `json:"purchaseDate"`
 		PurchaseFrom  string     `json:"purchaseFrom"  validate:"max=255"`
 		PurchasePrice float64    `json:"purchasePrice" extensions:"x-nullable,x-omitempty"`
-
-		// Sold
-		SoldDate  types.Date `json:"soldDate"`
-		SoldTo    string     `json:"soldTo"    validate:"max=255"`
-		SoldPrice float64    `json:"soldPrice" extensions:"x-nullable,x-omitempty"`
-		SoldNotes string     `json:"soldNotes"`
 
 		// Extras
 		Notes  string            `json:"notes"`
@@ -175,9 +164,6 @@ type (
 		ImageID     *uuid.UUID `json:"imageId,omitempty"     extensions:"x-nullable,x-omitempty"`
 		ThumbnailId *uuid.UUID `json:"thumbnailId,omitempty" extensions:"x-nullable,x-omitempty"`
 
-		// Sale details
-		SoldDate types.Date `json:"soldDate"`
-
 		// Container-specific (populated when querying locations)
 		ItemCount float64 `json:"itemCount,omitempty"`
 	}
@@ -193,20 +179,9 @@ type (
 		ModelNumber  string `json:"modelNumber"`
 		Manufacturer string `json:"manufacturer"`
 
-		// Warranty
-		LifetimeWarranty bool       `json:"lifetimeWarranty"`
-		WarrantyExpires  types.Date `json:"warrantyExpires"`
-		WarrantyDetails  string     `json:"warrantyDetails"`
-
 		// Purchase
 		PurchaseDate types.Date `json:"purchaseDate"`
 		PurchaseFrom string     `json:"purchaseFrom"`
-
-		// Sold
-		SoldDate  types.Date `json:"soldDate"`
-		SoldTo    string     `json:"soldTo"`
-		SoldPrice float64    `json:"soldPrice"`
-		SoldNotes string     `json:"soldNotes"`
 
 		// Extras
 		Notes string `json:"notes"`
@@ -274,13 +249,9 @@ func mapEntitySummary(e *ent.Entity) EntitySummary {
 		EntityType: et,
 		Tags:       tags,
 
-		// Warranty
 		Insured:     e.Insured,
 		ImageID:     imageID,
 		ThumbnailId: thumbnailID,
-
-		// Sale
-		SoldDate: types.DateFromTime(e.SoldDate),
 	}
 }
 
@@ -334,9 +305,6 @@ func mapEntityOut(e *ent.Entity) EntityOut {
 		Parent:                   parent,
 		AssetID:                  AssetID(e.AssetID),
 		EntitySummary:            mapEntitySummary(e),
-		LifetimeWarranty:         e.LifetimeWarranty,
-		WarrantyExpires:          types.DateFromTime(e.WarrantyExpires),
-		WarrantyDetails:          e.WarrantyDetails,
 		SyncChildEntityLocations: e.SyncChildEntityLocations,
 
 		// Identification
@@ -347,12 +315,6 @@ func mapEntityOut(e *ent.Entity) EntityOut {
 		// Purchase
 		PurchaseDate: types.DateFromTime(e.PurchaseDate),
 		PurchaseFrom: e.PurchaseFrom,
-
-		// Sold
-		SoldDate:  types.DateFromTime(e.SoldDate),
-		SoldTo:    e.SoldTo,
-		SoldPrice: e.SoldPrice,
-		SoldNotes: e.SoldNotes,
 
 		// Extras
 		Notes:       e.Notes,
@@ -1042,140 +1004,6 @@ func (r *EntityRepository) Create(ctx context.Context, gid uuid.UUID, data Entit
 	return out, err
 }
 
-// EntityCreateFromTemplate contains all data needed to create an entity from a template.
-type EntityCreateFromTemplate struct {
-	Name             string
-	Description      string
-	Quantity         float64
-	ParentID         uuid.UUID
-	EntityTypeID     uuid.UUID
-	TagIDs           []uuid.UUID
-	Insured          bool
-	Manufacturer     string
-	ModelNumber      string
-	LifetimeWarranty bool
-	WarrantyDetails  string
-	Fields           []EntityFieldData
-}
-
-// CreateFromTemplate creates an entity with all template data in a single transaction.
-func (r *EntityRepository) CreateFromTemplate(ctx context.Context, gid uuid.UUID, data EntityCreateFromTemplate) (EntityOut, error) {
-	ctx, span := entityTracer().Start(ctx, "repo.EntityRepository.CreateFromTemplate",
-		trace.WithAttributes(
-			attribute.String("group.id", gid.String()),
-			attribute.String("entity.name", data.Name),
-			attribute.Float64("entity.quantity", data.Quantity),
-			attribute.Bool("entity.parent_id.set", data.ParentID != uuid.Nil),
-			attribute.Bool("entity.entity_type_id.set", data.EntityTypeID != uuid.Nil),
-			attribute.Int("entity.tags.count", len(data.TagIDs)),
-			attribute.Int("entity.fields.count", len(data.Fields)),
-		))
-	defer span.End()
-
-	if err := validateQuantity("create entity from template", data.Quantity); err != nil {
-		recordSpanError(span, err)
-		return EntityOut{}, err
-	}
-
-	tx, err := r.db.Tx(ctx)
-	if err != nil {
-		recordSpanError(span, err)
-		return EntityOut{}, err
-	}
-	committed := false
-	defer func() {
-		if !committed {
-			if err := tx.Rollback(); err != nil {
-				log.Warn().Err(err).Msg("failed to rollback transaction during template entity creation")
-			}
-		}
-	}()
-
-	// Get next asset ID within transaction
-	nextAssetID, err := r.GetHighestAssetIDTx(ctx, tx, gid)
-	if err != nil {
-		recordSpanError(span, err)
-		return EntityOut{}, err
-	}
-	nextAssetID++
-	span.SetAttributes(attribute.Int64("entity.asset_id", int64(nextAssetID)))
-
-	// Create entity with all template data
-	newEntityID := uuid.New()
-	span.SetAttributes(attribute.String("entity.id", newEntityID.String()))
-
-	entityCtx, entitySpan := entityTracer().Start(ctx, "repo.EntityRepository.CreateFromTemplate.entity")
-	entityBuilder := tx.Entity.Create().
-		SetID(newEntityID).
-		SetName(data.Name).
-		SetDescription(data.Description).
-		SetQuantity(data.Quantity).
-		SetGroupID(gid).
-		SetAssetID(int64(nextAssetID)).
-		SetInsured(data.Insured).
-		SetManufacturer(data.Manufacturer).
-		SetModelNumber(data.ModelNumber).
-		SetLifetimeWarranty(data.LifetimeWarranty).
-		SetWarrantyDetails(data.WarrantyDetails)
-
-	if data.ParentID != uuid.Nil {
-		entityBuilder.SetParentID(data.ParentID)
-	}
-
-	if data.EntityTypeID != uuid.Nil {
-		entityBuilder.SetEntityTypeID(data.EntityTypeID)
-	}
-
-	if len(data.TagIDs) > 0 {
-		entityBuilder.AddTagIDs(data.TagIDs...)
-	}
-
-	_, err = entityBuilder.Save(entityCtx)
-	if err != nil {
-		recordSpanError(entitySpan, err)
-		entitySpan.End()
-		recordSpanError(span, err)
-		return EntityOut{}, err
-	}
-	entitySpan.End()
-
-	if len(data.Fields) > 0 {
-		fieldsCtx, fieldsSpan := entityTracer().Start(ctx, "repo.EntityRepository.CreateFromTemplate.fields",
-			trace.WithAttributes(attribute.Int("fields.count", len(data.Fields))))
-		for _, field := range data.Fields {
-			_, err = tx.EntityField.Create().
-				SetEntityID(newEntityID).
-				SetType(entityfield.Type(field.Type)).
-				SetName(field.Name).
-				SetTextValue(field.TextValue).
-				Save(fieldsCtx)
-			if err != nil {
-				wrapped := fmt.Errorf("failed to create field %s: %w", field.Name, err)
-				recordSpanError(fieldsSpan, wrapped)
-				fieldsSpan.End()
-				recordSpanError(span, wrapped)
-				return EntityOut{}, wrapped
-			}
-		}
-		fieldsSpan.End()
-	}
-
-	_, commitSpan := entityTracer().Start(ctx, "repo.EntityRepository.CreateFromTemplate.commit")
-	if err = tx.Commit(); err != nil {
-		recordSpanError(commitSpan, err)
-		commitSpan.End()
-		recordSpanError(span, err)
-		return EntityOut{}, err
-	}
-	commitSpan.End()
-	committed = true
-
-	r.publishMutationEvent(gid)
-	out, err := r.GetOne(ctx, newEntityID)
-	recordSpanError(span, err)
-	return out, err
-}
-
 func (r *EntityRepository) Delete(ctx context.Context, id uuid.UUID) error {
 	ctx, span := entityTracer().Start(ctx, "repo.EntityRepository.Delete",
 		trace.WithAttributes(attribute.String("entity.id", id.String())))
@@ -1439,35 +1267,18 @@ func (r *EntityRepository) UpdateByGroup(ctx context.Context, gid uuid.UUID, dat
 		SetArchived(data.Archived).
 		SetPurchaseFrom(data.PurchaseFrom).
 		SetPurchasePrice(data.PurchasePrice).
-		SetSoldTo(data.SoldTo).
-		SetSoldPrice(data.SoldPrice).
-		SetSoldNotes(data.SoldNotes).
 		SetNotes(data.Notes).
-		SetLifetimeWarranty(data.LifetimeWarranty).
 		SetInsured(data.Insured).
 		SetStatus(data.Status).
-		SetWarrantyDetails(data.WarrantyDetails).
 		SetQuantity(data.Quantity).
 		SetAssetID(int64(data.AssetID)).
 		SetSyncChildEntityLocations(data.SyncChildEntityLocations)
 
-	// Date fields are nullable. Writing types.Date{}.Time() would persist
-	// the 0001-01-01 sentinel that ZeroOutTimeFields then has to chase —
-	// clear the column instead so absent dates round-trip as NULL/"".
+	// Date fields are nullable — clear the column so absent dates round-trip as NULL/"".
 	if t := data.PurchaseDate.Time(); t.IsZero() {
 		q.ClearPurchaseDate()
 	} else {
 		q.SetPurchaseDate(t)
-	}
-	if t := data.SoldDate.Time(); t.IsZero() {
-		q.ClearSoldDate()
-	} else {
-		q.SetSoldDate(t)
-	}
-	if t := data.WarrantyExpires.Time(); t.IsZero() {
-		q.ClearWarrantyExpires()
-	} else {
-		q.SetWarrantyExpires(t)
 	}
 
 	if data.EntityTypeID != uuid.Nil {
@@ -1915,10 +1726,6 @@ func (r *EntityRepository) ZeroOutTimeFields(ctx context.Context, gid uuid.UUID)
 		entity.Or(
 			entity.PurchaseDateNotNil(),
 			entity.PurchaseFromLT("0002-01-01"),
-			entity.SoldDateNotNil(),
-			entity.SoldToLT("0002-01-01"),
-			entity.WarrantyExpiresNotNil(),
-			entity.WarrantyDetailsLT("0002-01-01"),
 		),
 	)
 
@@ -1958,28 +1765,6 @@ func (r *EntityRepository) ZeroOutTimeFields(ctx context.Context, gid uuid.UUID)
 			}
 		} else {
 			updateQ.ClearPurchaseDate()
-		}
-
-		if !e.SoldDate.IsZero() {
-			switch {
-			case e.SoldDate.Year() < 100:
-				updateQ.ClearSoldDate()
-			default:
-				updateQ.SetSoldDate(toDateOnly(e.SoldDate))
-			}
-		} else {
-			updateQ.ClearSoldDate()
-		}
-
-		if !e.WarrantyExpires.IsZero() {
-			switch {
-			case e.WarrantyExpires.Year() < 100:
-				updateQ.ClearWarrantyExpires()
-			default:
-				updateQ.SetWarrantyExpires(toDateOnly(e.WarrantyExpires))
-			}
-		} else {
-			updateQ.ClearWarrantyExpires()
 		}
 
 		_, err = updateQ.Save(ctx)
@@ -2125,28 +1910,15 @@ func (r *EntityRepository) Duplicate(ctx context.Context, gid, id uuid.UUID, opt
 		SetSerialNumber(originalEntity.SerialNumber).
 		SetModelNumber(originalEntity.ModelNumber).
 		SetManufacturer(originalEntity.Manufacturer).
-		SetLifetimeWarranty(originalEntity.LifetimeWarranty).
-		SetWarrantyDetails(originalEntity.WarrantyDetails).
 		SetPurchaseFrom(originalEntity.PurchaseFrom).
 		SetPurchasePrice(originalEntity.PurchasePrice).
-		SetSoldTo(originalEntity.SoldTo).
-		SetSoldPrice(originalEntity.SoldPrice).
-		SetSoldNotes(originalEntity.SoldNotes).
 		SetNotes(originalEntity.Notes).
 		SetInsured(originalEntity.Insured).
 		SetArchived(originalEntity.Archived).
 		SetSyncChildEntityLocations(originalEntity.SyncChildEntityLocations)
 
-	// Skip Set on zero dates so the duplicate's nullable date columns end up
-	// NULL rather than the 0001-01-01 sentinel.
 	if t := originalEntity.PurchaseDate.Time(); !t.IsZero() {
 		entityBuilder.SetPurchaseDate(t)
-	}
-	if t := originalEntity.SoldDate.Time(); !t.IsZero() {
-		entityBuilder.SetSoldDate(t)
-	}
-	if t := originalEntity.WarrantyExpires.Time(); !t.IsZero() {
-		entityBuilder.SetWarrantyExpires(t)
 	}
 
 	if originalEntity.Parent != nil {

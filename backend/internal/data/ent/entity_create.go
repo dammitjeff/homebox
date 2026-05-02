@@ -229,48 +229,6 @@ func (_c *EntityCreate) SetNillableManufacturer(v *string) *EntityCreate {
 	return _c
 }
 
-// SetLifetimeWarranty sets the "lifetime_warranty" field.
-func (_c *EntityCreate) SetLifetimeWarranty(v bool) *EntityCreate {
-	_c.mutation.SetLifetimeWarranty(v)
-	return _c
-}
-
-// SetNillableLifetimeWarranty sets the "lifetime_warranty" field if the given value is not nil.
-func (_c *EntityCreate) SetNillableLifetimeWarranty(v *bool) *EntityCreate {
-	if v != nil {
-		_c.SetLifetimeWarranty(*v)
-	}
-	return _c
-}
-
-// SetWarrantyExpires sets the "warranty_expires" field.
-func (_c *EntityCreate) SetWarrantyExpires(v time.Time) *EntityCreate {
-	_c.mutation.SetWarrantyExpires(v)
-	return _c
-}
-
-// SetNillableWarrantyExpires sets the "warranty_expires" field if the given value is not nil.
-func (_c *EntityCreate) SetNillableWarrantyExpires(v *time.Time) *EntityCreate {
-	if v != nil {
-		_c.SetWarrantyExpires(*v)
-	}
-	return _c
-}
-
-// SetWarrantyDetails sets the "warranty_details" field.
-func (_c *EntityCreate) SetWarrantyDetails(v string) *EntityCreate {
-	_c.mutation.SetWarrantyDetails(v)
-	return _c
-}
-
-// SetNillableWarrantyDetails sets the "warranty_details" field if the given value is not nil.
-func (_c *EntityCreate) SetNillableWarrantyDetails(v *string) *EntityCreate {
-	if v != nil {
-		_c.SetWarrantyDetails(*v)
-	}
-	return _c
-}
-
 // SetPurchaseDate sets the "purchase_date" field.
 func (_c *EntityCreate) SetPurchaseDate(v time.Time) *EntityCreate {
 	_c.mutation.SetPurchaseDate(v)
@@ -309,62 +267,6 @@ func (_c *EntityCreate) SetPurchasePrice(v float64) *EntityCreate {
 func (_c *EntityCreate) SetNillablePurchasePrice(v *float64) *EntityCreate {
 	if v != nil {
 		_c.SetPurchasePrice(*v)
-	}
-	return _c
-}
-
-// SetSoldDate sets the "sold_date" field.
-func (_c *EntityCreate) SetSoldDate(v time.Time) *EntityCreate {
-	_c.mutation.SetSoldDate(v)
-	return _c
-}
-
-// SetNillableSoldDate sets the "sold_date" field if the given value is not nil.
-func (_c *EntityCreate) SetNillableSoldDate(v *time.Time) *EntityCreate {
-	if v != nil {
-		_c.SetSoldDate(*v)
-	}
-	return _c
-}
-
-// SetSoldTo sets the "sold_to" field.
-func (_c *EntityCreate) SetSoldTo(v string) *EntityCreate {
-	_c.mutation.SetSoldTo(v)
-	return _c
-}
-
-// SetNillableSoldTo sets the "sold_to" field if the given value is not nil.
-func (_c *EntityCreate) SetNillableSoldTo(v *string) *EntityCreate {
-	if v != nil {
-		_c.SetSoldTo(*v)
-	}
-	return _c
-}
-
-// SetSoldPrice sets the "sold_price" field.
-func (_c *EntityCreate) SetSoldPrice(v float64) *EntityCreate {
-	_c.mutation.SetSoldPrice(v)
-	return _c
-}
-
-// SetNillableSoldPrice sets the "sold_price" field if the given value is not nil.
-func (_c *EntityCreate) SetNillableSoldPrice(v *float64) *EntityCreate {
-	if v != nil {
-		_c.SetSoldPrice(*v)
-	}
-	return _c
-}
-
-// SetSoldNotes sets the "sold_notes" field.
-func (_c *EntityCreate) SetSoldNotes(v string) *EntityCreate {
-	_c.mutation.SetSoldNotes(v)
-	return _c
-}
-
-// SetNillableSoldNotes sets the "sold_notes" field if the given value is not nil.
-func (_c *EntityCreate) SetNillableSoldNotes(v *string) *EntityCreate {
-	if v != nil {
-		_c.SetSoldNotes(*v)
 	}
 	return _c
 }
@@ -566,17 +468,9 @@ func (_c *EntityCreate) defaults() {
 		v := entity.DefaultSyncChildEntityLocations
 		_c.mutation.SetSyncChildEntityLocations(v)
 	}
-	if _, ok := _c.mutation.LifetimeWarranty(); !ok {
-		v := entity.DefaultLifetimeWarranty
-		_c.mutation.SetLifetimeWarranty(v)
-	}
 	if _, ok := _c.mutation.PurchasePrice(); !ok {
 		v := entity.DefaultPurchasePrice
 		_c.mutation.SetPurchasePrice(v)
-	}
-	if _, ok := _c.mutation.SoldPrice(); !ok {
-		v := entity.DefaultSoldPrice
-		_c.mutation.SetSoldPrice(v)
 	}
 	if _, ok := _c.mutation.ID(); !ok {
 		v := entity.DefaultID()
@@ -653,24 +547,8 @@ func (_c *EntityCreate) check() error {
 			return &ValidationError{Name: "manufacturer", err: fmt.Errorf(`ent: validator failed for field "Entity.manufacturer": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.LifetimeWarranty(); !ok {
-		return &ValidationError{Name: "lifetime_warranty", err: errors.New(`ent: missing required field "Entity.lifetime_warranty"`)}
-	}
-	if v, ok := _c.mutation.WarrantyDetails(); ok {
-		if err := entity.WarrantyDetailsValidator(v); err != nil {
-			return &ValidationError{Name: "warranty_details", err: fmt.Errorf(`ent: validator failed for field "Entity.warranty_details": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.PurchasePrice(); !ok {
 		return &ValidationError{Name: "purchase_price", err: errors.New(`ent: missing required field "Entity.purchase_price"`)}
-	}
-	if _, ok := _c.mutation.SoldPrice(); !ok {
-		return &ValidationError{Name: "sold_price", err: errors.New(`ent: missing required field "Entity.sold_price"`)}
-	}
-	if v, ok := _c.mutation.SoldNotes(); ok {
-		if err := entity.SoldNotesValidator(v); err != nil {
-			return &ValidationError{Name: "sold_notes", err: fmt.Errorf(`ent: validator failed for field "Entity.sold_notes": %w`, err)}
-		}
 	}
 	if len(_c.mutation.GroupIDs()) == 0 {
 		return &ValidationError{Name: "group", err: errors.New(`ent: missing required edge "Entity.group"`)}
@@ -773,18 +651,6 @@ func (_c *EntityCreate) createSpec() (*Entity, *sqlgraph.CreateSpec) {
 		_spec.SetField(entity.FieldManufacturer, field.TypeString, value)
 		_node.Manufacturer = value
 	}
-	if value, ok := _c.mutation.LifetimeWarranty(); ok {
-		_spec.SetField(entity.FieldLifetimeWarranty, field.TypeBool, value)
-		_node.LifetimeWarranty = value
-	}
-	if value, ok := _c.mutation.WarrantyExpires(); ok {
-		_spec.SetField(entity.FieldWarrantyExpires, field.TypeTime, value)
-		_node.WarrantyExpires = value
-	}
-	if value, ok := _c.mutation.WarrantyDetails(); ok {
-		_spec.SetField(entity.FieldWarrantyDetails, field.TypeString, value)
-		_node.WarrantyDetails = value
-	}
 	if value, ok := _c.mutation.PurchaseDate(); ok {
 		_spec.SetField(entity.FieldPurchaseDate, field.TypeTime, value)
 		_node.PurchaseDate = value
@@ -796,22 +662,6 @@ func (_c *EntityCreate) createSpec() (*Entity, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.PurchasePrice(); ok {
 		_spec.SetField(entity.FieldPurchasePrice, field.TypeFloat64, value)
 		_node.PurchasePrice = value
-	}
-	if value, ok := _c.mutation.SoldDate(); ok {
-		_spec.SetField(entity.FieldSoldDate, field.TypeTime, value)
-		_node.SoldDate = value
-	}
-	if value, ok := _c.mutation.SoldTo(); ok {
-		_spec.SetField(entity.FieldSoldTo, field.TypeString, value)
-		_node.SoldTo = value
-	}
-	if value, ok := _c.mutation.SoldPrice(); ok {
-		_spec.SetField(entity.FieldSoldPrice, field.TypeFloat64, value)
-		_node.SoldPrice = value
-	}
-	if value, ok := _c.mutation.SoldNotes(); ok {
-		_spec.SetField(entity.FieldSoldNotes, field.TypeString, value)
-		_node.SoldNotes = value
 	}
 	if nodes := _c.mutation.GroupIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

@@ -109,16 +109,9 @@ var (
 		{Name: "serial_number", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "model_number", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "manufacturer", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "lifetime_warranty", Type: field.TypeBool, Default: false},
-		{Name: "warranty_expires", Type: field.TypeTime, Nullable: true},
-		{Name: "warranty_details", Type: field.TypeString, Nullable: true, Size: 1000},
 		{Name: "purchase_date", Type: field.TypeTime, Nullable: true},
 		{Name: "purchase_from", Type: field.TypeString, Nullable: true},
 		{Name: "purchase_price", Type: field.TypeFloat64, Default: 0},
-		{Name: "sold_date", Type: field.TypeTime, Nullable: true},
-		{Name: "sold_to", Type: field.TypeString, Nullable: true},
-		{Name: "sold_price", Type: field.TypeFloat64, Default: 0},
-		{Name: "sold_notes", Type: field.TypeString, Nullable: true, Size: 1000},
 		{Name: "entity_children", Type: field.TypeUUID, Nullable: true},
 		{Name: "entity_type_entities", Type: field.TypeUUID},
 		{Name: "group_entities", Type: field.TypeUUID},
@@ -131,19 +124,19 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "entities_entities_children",
-				Columns:    []*schema.Column{EntitiesColumns[26]},
+				Columns:    []*schema.Column{EntitiesColumns[19]},
 				RefColumns: []*schema.Column{EntitiesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "entities_entity_types_entities",
-				Columns:    []*schema.Column{EntitiesColumns[27]},
+				Columns:    []*schema.Column{EntitiesColumns[20]},
 				RefColumns: []*schema.Column{EntityTypesColumns[0]},
 				OnDelete:   schema.Restrict,
 			},
 			{
 				Symbol:     "entities_groups_entities",
-				Columns:    []*schema.Column{EntitiesColumns[28]},
+				Columns:    []*schema.Column{EntitiesColumns[21]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -209,56 +202,6 @@ var (
 			},
 		},
 	}
-	// EntityTemplatesColumns holds the columns for the "entity_templates" table.
-	EntityTemplatesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUUID},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "name", Type: field.TypeString, Size: 255},
-		{Name: "description", Type: field.TypeString, Nullable: true, Size: 1000},
-		{Name: "notes", Type: field.TypeString, Nullable: true, Size: 1000},
-		{Name: "default_quantity", Type: field.TypeFloat64, Default: 1},
-		{Name: "default_insured", Type: field.TypeBool, Default: false},
-		{Name: "default_name", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "default_description", Type: field.TypeString, Nullable: true, Size: 1000},
-		{Name: "default_manufacturer", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "default_model_number", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "default_lifetime_warranty", Type: field.TypeBool, Default: false},
-		{Name: "default_warranty_details", Type: field.TypeString, Nullable: true, Size: 1000},
-		{Name: "include_warranty_fields", Type: field.TypeBool, Default: false},
-		{Name: "include_purchase_fields", Type: field.TypeBool, Default: false},
-		{Name: "include_sold_fields", Type: field.TypeBool, Default: false},
-		{Name: "default_tag_ids", Type: field.TypeJSON, Nullable: true},
-		{Name: "entity_template_location", Type: field.TypeUUID, Nullable: true},
-		{Name: "group_entity_templates", Type: field.TypeUUID},
-	}
-	// EntityTemplatesTable holds the schema information for the "entity_templates" table.
-	EntityTemplatesTable = &schema.Table{
-		Name:       "entity_templates",
-		Columns:    EntityTemplatesColumns,
-		PrimaryKey: []*schema.Column{EntityTemplatesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "entity_templates_entities_location",
-				Columns:    []*schema.Column{EntityTemplatesColumns[18]},
-				RefColumns: []*schema.Column{EntitiesColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "entity_templates_groups_entity_templates",
-				Columns:    []*schema.Column{EntityTemplatesColumns[19]},
-				RefColumns: []*schema.Column{GroupsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "entitytemplate_name",
-				Unique:  false,
-				Columns: []*schema.Column{EntityTemplatesColumns[3]},
-			},
-		},
-	}
 	// EntityTypesColumns holds the columns for the "entity_types" table.
 	EntityTypesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
@@ -268,7 +211,6 @@ var (
 		{Name: "description", Type: field.TypeString, Nullable: true, Size: 1000},
 		{Name: "is_location", Type: field.TypeBool, Default: false},
 		{Name: "icon", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "entity_type_default_template", Type: field.TypeUUID, Nullable: true},
 		{Name: "group_entity_types", Type: field.TypeUUID},
 	}
 	// EntityTypesTable holds the schema information for the "entity_types" table.
@@ -278,14 +220,8 @@ var (
 		PrimaryKey: []*schema.Column{EntityTypesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "entity_types_entity_templates_default_template",
-				Columns:    []*schema.Column{EntityTypesColumns[7]},
-				RefColumns: []*schema.Column{EntityTemplatesColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
 				Symbol:     "entity_types_groups_entity_types",
-				Columns:    []*schema.Column{EntityTypesColumns[8]},
+				Columns:    []*schema.Column{EntityTypesColumns[7]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -440,34 +376,6 @@ var (
 			},
 		},
 	}
-	// TemplateFieldsColumns holds the columns for the "template_fields" table.
-	TemplateFieldsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUUID},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "name", Type: field.TypeString, Size: 255},
-		{Name: "description", Type: field.TypeString, Nullable: true, Size: 1000},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"text", "number", "boolean", "time"}},
-		{Name: "text_value", Type: field.TypeString, Nullable: true, Size: 500},
-		{Name: "number_value", Type: field.TypeInt, Nullable: true},
-		{Name: "boolean_value", Type: field.TypeBool, Default: false},
-		{Name: "time_value", Type: field.TypeTime},
-		{Name: "entity_template_fields", Type: field.TypeUUID, Nullable: true},
-	}
-	// TemplateFieldsTable holds the schema information for the "template_fields" table.
-	TemplateFieldsTable = &schema.Table{
-		Name:       "template_fields",
-		Columns:    TemplateFieldsColumns,
-		PrimaryKey: []*schema.Column{TemplateFieldsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "template_fields_entity_templates_fields",
-				Columns:    []*schema.Column{TemplateFieldsColumns[10]},
-				RefColumns: []*schema.Column{EntityTemplatesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
@@ -555,14 +463,12 @@ var (
 		AuthTokensTable,
 		EntitiesTable,
 		EntityFieldsTable,
-		EntityTemplatesTable,
 		EntityTypesTable,
 		GroupsTable,
 		GroupInvitationTokensTable,
 		MaintenanceEntriesTable,
 		NotifiersTable,
 		TagsTable,
-		TemplateFieldsTable,
 		UsersTable,
 		TagEntitiesTable,
 		UserGroupsTable,
@@ -578,17 +484,13 @@ func init() {
 	EntitiesTable.ForeignKeys[1].RefTable = EntityTypesTable
 	EntitiesTable.ForeignKeys[2].RefTable = GroupsTable
 	EntityFieldsTable.ForeignKeys[0].RefTable = EntitiesTable
-	EntityTemplatesTable.ForeignKeys[0].RefTable = EntitiesTable
-	EntityTemplatesTable.ForeignKeys[1].RefTable = GroupsTable
-	EntityTypesTable.ForeignKeys[0].RefTable = EntityTemplatesTable
-	EntityTypesTable.ForeignKeys[1].RefTable = GroupsTable
+	EntityTypesTable.ForeignKeys[0].RefTable = GroupsTable
 	GroupInvitationTokensTable.ForeignKeys[0].RefTable = GroupsTable
 	MaintenanceEntriesTable.ForeignKeys[0].RefTable = EntitiesTable
 	NotifiersTable.ForeignKeys[0].RefTable = GroupsTable
 	NotifiersTable.ForeignKeys[1].RefTable = UsersTable
 	TagsTable.ForeignKeys[0].RefTable = GroupsTable
 	TagsTable.ForeignKeys[1].RefTable = TagsTable
-	TemplateFieldsTable.ForeignKeys[0].RefTable = EntityTemplatesTable
 	TagEntitiesTable.ForeignKeys[0].RefTable = TagsTable
 	TagEntitiesTable.ForeignKeys[1].RefTable = EntitiesTable
 	UserGroupsTable.ForeignKeys[0].RefTable = UsersTable

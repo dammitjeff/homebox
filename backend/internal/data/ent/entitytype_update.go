@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entity"
-	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytemplate"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytype"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/group"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/predicate"
@@ -132,25 +131,6 @@ func (_u *EntityTypeUpdate) AddEntities(v ...*Entity) *EntityTypeUpdate {
 	return _u.AddEntityIDs(ids...)
 }
 
-// SetDefaultTemplateID sets the "default_template" edge to the EntityTemplate entity by ID.
-func (_u *EntityTypeUpdate) SetDefaultTemplateID(id uuid.UUID) *EntityTypeUpdate {
-	_u.mutation.SetDefaultTemplateID(id)
-	return _u
-}
-
-// SetNillableDefaultTemplateID sets the "default_template" edge to the EntityTemplate entity by ID if the given value is not nil.
-func (_u *EntityTypeUpdate) SetNillableDefaultTemplateID(id *uuid.UUID) *EntityTypeUpdate {
-	if id != nil {
-		_u = _u.SetDefaultTemplateID(*id)
-	}
-	return _u
-}
-
-// SetDefaultTemplate sets the "default_template" edge to the EntityTemplate entity.
-func (_u *EntityTypeUpdate) SetDefaultTemplate(v *EntityTemplate) *EntityTypeUpdate {
-	return _u.SetDefaultTemplateID(v.ID)
-}
-
 // Mutation returns the EntityTypeMutation object of the builder.
 func (_u *EntityTypeUpdate) Mutation() *EntityTypeMutation {
 	return _u.mutation
@@ -181,12 +161,6 @@ func (_u *EntityTypeUpdate) RemoveEntities(v ...*Entity) *EntityTypeUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveEntityIDs(ids...)
-}
-
-// ClearDefaultTemplate clears the "default_template" edge to the EntityTemplate entity.
-func (_u *EntityTypeUpdate) ClearDefaultTemplate() *EntityTypeUpdate {
-	_u.mutation.ClearDefaultTemplate()
-	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -355,35 +329,6 @@ func (_u *EntityTypeUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.DefaultTemplateCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   entitytype.DefaultTemplateTable,
-			Columns: []string{entitytype.DefaultTemplateColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.DefaultTemplateIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   entitytype.DefaultTemplateTable,
-			Columns: []string{entitytype.DefaultTemplateColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{entitytype.Label}
@@ -504,25 +449,6 @@ func (_u *EntityTypeUpdateOne) AddEntities(v ...*Entity) *EntityTypeUpdateOne {
 	return _u.AddEntityIDs(ids...)
 }
 
-// SetDefaultTemplateID sets the "default_template" edge to the EntityTemplate entity by ID.
-func (_u *EntityTypeUpdateOne) SetDefaultTemplateID(id uuid.UUID) *EntityTypeUpdateOne {
-	_u.mutation.SetDefaultTemplateID(id)
-	return _u
-}
-
-// SetNillableDefaultTemplateID sets the "default_template" edge to the EntityTemplate entity by ID if the given value is not nil.
-func (_u *EntityTypeUpdateOne) SetNillableDefaultTemplateID(id *uuid.UUID) *EntityTypeUpdateOne {
-	if id != nil {
-		_u = _u.SetDefaultTemplateID(*id)
-	}
-	return _u
-}
-
-// SetDefaultTemplate sets the "default_template" edge to the EntityTemplate entity.
-func (_u *EntityTypeUpdateOne) SetDefaultTemplate(v *EntityTemplate) *EntityTypeUpdateOne {
-	return _u.SetDefaultTemplateID(v.ID)
-}
-
 // Mutation returns the EntityTypeMutation object of the builder.
 func (_u *EntityTypeUpdateOne) Mutation() *EntityTypeMutation {
 	return _u.mutation
@@ -553,12 +479,6 @@ func (_u *EntityTypeUpdateOne) RemoveEntities(v ...*Entity) *EntityTypeUpdateOne
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveEntityIDs(ids...)
-}
-
-// ClearDefaultTemplate clears the "default_template" edge to the EntityTemplate entity.
-func (_u *EntityTypeUpdateOne) ClearDefaultTemplate() *EntityTypeUpdateOne {
-	_u.mutation.ClearDefaultTemplate()
-	return _u
 }
 
 // Where appends a list predicates to the EntityTypeUpdate builder.
@@ -750,35 +670,6 @@ func (_u *EntityTypeUpdateOne) sqlSave(ctx context.Context) (_node *EntityType, 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(entity.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.DefaultTemplateCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   entitytype.DefaultTemplateTable,
-			Columns: []string{entitytype.DefaultTemplateColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.DefaultTemplateIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   entitytype.DefaultTemplateTable,
-			Columns: []string{entitytype.DefaultTemplateColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

@@ -31,8 +31,6 @@ const (
 	EdgeGroup = "group"
 	// EdgeEntities holds the string denoting the entities edge name in mutations.
 	EdgeEntities = "entities"
-	// EdgeDefaultTemplate holds the string denoting the default_template edge name in mutations.
-	EdgeDefaultTemplate = "default_template"
 	// Table holds the table name of the entitytype in the database.
 	Table = "entity_types"
 	// GroupTable is the table that holds the group relation/edge.
@@ -49,13 +47,6 @@ const (
 	EntitiesInverseTable = "entities"
 	// EntitiesColumn is the table column denoting the entities relation/edge.
 	EntitiesColumn = "entity_type_entities"
-	// DefaultTemplateTable is the table that holds the default_template relation/edge.
-	DefaultTemplateTable = "entity_types"
-	// DefaultTemplateInverseTable is the table name for the EntityTemplate entity.
-	// It exists in this package in order to avoid circular dependency with the "entitytemplate" package.
-	DefaultTemplateInverseTable = "entity_templates"
-	// DefaultTemplateColumn is the table column denoting the default_template relation/edge.
-	DefaultTemplateColumn = "entity_type_default_template"
 )
 
 // Columns holds all SQL columns for entitytype fields.
@@ -72,7 +63,6 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "entity_types"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"entity_type_default_template",
 	"group_entity_types",
 }
 
@@ -168,13 +158,6 @@ func ByEntities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newEntitiesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-
-// ByDefaultTemplateField orders the results by default_template field.
-func ByDefaultTemplateField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newDefaultTemplateStep(), sql.OrderByField(field, opts...))
-	}
-}
 func newGroupStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -187,12 +170,5 @@ func newEntitiesStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(EntitiesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, EntitiesTable, EntitiesColumn),
-	)
-}
-func newDefaultTemplateStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(DefaultTemplateInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, DefaultTemplateTable, DefaultTemplateColumn),
 	)
 }

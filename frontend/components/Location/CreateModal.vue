@@ -185,22 +185,9 @@
     }
   });
 
-  async function onEntityTypeChanged(typeId: string) {
+  function onEntityTypeChanged(typeId: string) {
     const et = locationTypes.value.find(t => t.id === typeId);
     selectedEntityType.value = et || null;
-
-    // If the selected type has a default template, auto-apply it
-    if (et?.defaultTemplateId && et.defaultTemplate) {
-      const { data: tplData, error: tplError } = await api.templates.get(et.defaultTemplateId);
-      if (!tplError && tplData) {
-        if (tplData.defaultName) form.name = tplData.defaultName;
-        if (tplData.defaultDescription) form.description = tplData.defaultDescription;
-        if (tplData.defaultTags && tplData.defaultTags.length > 0) {
-          form.tags = tplData.defaultTags.map(l => l.id);
-        }
-        toast.success(t("components.template.toast.applied", { name: tplData.name }));
-      }
-    }
   }
 
   const loading = ref(false);

@@ -273,60 +273,6 @@ func (_u *EntityUpdate) ClearManufacturer() *EntityUpdate {
 	return _u
 }
 
-// SetLifetimeWarranty sets the "lifetime_warranty" field.
-func (_u *EntityUpdate) SetLifetimeWarranty(v bool) *EntityUpdate {
-	_u.mutation.SetLifetimeWarranty(v)
-	return _u
-}
-
-// SetNillableLifetimeWarranty sets the "lifetime_warranty" field if the given value is not nil.
-func (_u *EntityUpdate) SetNillableLifetimeWarranty(v *bool) *EntityUpdate {
-	if v != nil {
-		_u.SetLifetimeWarranty(*v)
-	}
-	return _u
-}
-
-// SetWarrantyExpires sets the "warranty_expires" field.
-func (_u *EntityUpdate) SetWarrantyExpires(v time.Time) *EntityUpdate {
-	_u.mutation.SetWarrantyExpires(v)
-	return _u
-}
-
-// SetNillableWarrantyExpires sets the "warranty_expires" field if the given value is not nil.
-func (_u *EntityUpdate) SetNillableWarrantyExpires(v *time.Time) *EntityUpdate {
-	if v != nil {
-		_u.SetWarrantyExpires(*v)
-	}
-	return _u
-}
-
-// ClearWarrantyExpires clears the value of the "warranty_expires" field.
-func (_u *EntityUpdate) ClearWarrantyExpires() *EntityUpdate {
-	_u.mutation.ClearWarrantyExpires()
-	return _u
-}
-
-// SetWarrantyDetails sets the "warranty_details" field.
-func (_u *EntityUpdate) SetWarrantyDetails(v string) *EntityUpdate {
-	_u.mutation.SetWarrantyDetails(v)
-	return _u
-}
-
-// SetNillableWarrantyDetails sets the "warranty_details" field if the given value is not nil.
-func (_u *EntityUpdate) SetNillableWarrantyDetails(v *string) *EntityUpdate {
-	if v != nil {
-		_u.SetWarrantyDetails(*v)
-	}
-	return _u
-}
-
-// ClearWarrantyDetails clears the value of the "warranty_details" field.
-func (_u *EntityUpdate) ClearWarrantyDetails() *EntityUpdate {
-	_u.mutation.ClearWarrantyDetails()
-	return _u
-}
-
 // SetPurchaseDate sets the "purchase_date" field.
 func (_u *EntityUpdate) SetPurchaseDate(v time.Time) *EntityUpdate {
 	_u.mutation.SetPurchaseDate(v)
@@ -385,87 +331,6 @@ func (_u *EntityUpdate) SetNillablePurchasePrice(v *float64) *EntityUpdate {
 // AddPurchasePrice adds value to the "purchase_price" field.
 func (_u *EntityUpdate) AddPurchasePrice(v float64) *EntityUpdate {
 	_u.mutation.AddPurchasePrice(v)
-	return _u
-}
-
-// SetSoldDate sets the "sold_date" field.
-func (_u *EntityUpdate) SetSoldDate(v time.Time) *EntityUpdate {
-	_u.mutation.SetSoldDate(v)
-	return _u
-}
-
-// SetNillableSoldDate sets the "sold_date" field if the given value is not nil.
-func (_u *EntityUpdate) SetNillableSoldDate(v *time.Time) *EntityUpdate {
-	if v != nil {
-		_u.SetSoldDate(*v)
-	}
-	return _u
-}
-
-// ClearSoldDate clears the value of the "sold_date" field.
-func (_u *EntityUpdate) ClearSoldDate() *EntityUpdate {
-	_u.mutation.ClearSoldDate()
-	return _u
-}
-
-// SetSoldTo sets the "sold_to" field.
-func (_u *EntityUpdate) SetSoldTo(v string) *EntityUpdate {
-	_u.mutation.SetSoldTo(v)
-	return _u
-}
-
-// SetNillableSoldTo sets the "sold_to" field if the given value is not nil.
-func (_u *EntityUpdate) SetNillableSoldTo(v *string) *EntityUpdate {
-	if v != nil {
-		_u.SetSoldTo(*v)
-	}
-	return _u
-}
-
-// ClearSoldTo clears the value of the "sold_to" field.
-func (_u *EntityUpdate) ClearSoldTo() *EntityUpdate {
-	_u.mutation.ClearSoldTo()
-	return _u
-}
-
-// SetSoldPrice sets the "sold_price" field.
-func (_u *EntityUpdate) SetSoldPrice(v float64) *EntityUpdate {
-	_u.mutation.ResetSoldPrice()
-	_u.mutation.SetSoldPrice(v)
-	return _u
-}
-
-// SetNillableSoldPrice sets the "sold_price" field if the given value is not nil.
-func (_u *EntityUpdate) SetNillableSoldPrice(v *float64) *EntityUpdate {
-	if v != nil {
-		_u.SetSoldPrice(*v)
-	}
-	return _u
-}
-
-// AddSoldPrice adds value to the "sold_price" field.
-func (_u *EntityUpdate) AddSoldPrice(v float64) *EntityUpdate {
-	_u.mutation.AddSoldPrice(v)
-	return _u
-}
-
-// SetSoldNotes sets the "sold_notes" field.
-func (_u *EntityUpdate) SetSoldNotes(v string) *EntityUpdate {
-	_u.mutation.SetSoldNotes(v)
-	return _u
-}
-
-// SetNillableSoldNotes sets the "sold_notes" field if the given value is not nil.
-func (_u *EntityUpdate) SetNillableSoldNotes(v *string) *EntityUpdate {
-	if v != nil {
-		_u.SetSoldNotes(*v)
-	}
-	return _u
-}
-
-// ClearSoldNotes clears the value of the "sold_notes" field.
-func (_u *EntityUpdate) ClearSoldNotes() *EntityUpdate {
-	_u.mutation.ClearSoldNotes()
 	return _u
 }
 
@@ -791,16 +656,6 @@ func (_u *EntityUpdate) check() error {
 			return &ValidationError{Name: "manufacturer", err: fmt.Errorf(`ent: validator failed for field "Entity.manufacturer": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.WarrantyDetails(); ok {
-		if err := entity.WarrantyDetailsValidator(v); err != nil {
-			return &ValidationError{Name: "warranty_details", err: fmt.Errorf(`ent: validator failed for field "Entity.warranty_details": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.SoldNotes(); ok {
-		if err := entity.SoldNotesValidator(v); err != nil {
-			return &ValidationError{Name: "sold_notes", err: fmt.Errorf(`ent: validator failed for field "Entity.sold_notes": %w`, err)}
-		}
-	}
 	if _u.mutation.GroupCleared() && len(_u.mutation.GroupIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Entity.group"`)
 	}
@@ -888,21 +743,6 @@ func (_u *EntityUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.ManufacturerCleared() {
 		_spec.ClearField(entity.FieldManufacturer, field.TypeString)
 	}
-	if value, ok := _u.mutation.LifetimeWarranty(); ok {
-		_spec.SetField(entity.FieldLifetimeWarranty, field.TypeBool, value)
-	}
-	if value, ok := _u.mutation.WarrantyExpires(); ok {
-		_spec.SetField(entity.FieldWarrantyExpires, field.TypeTime, value)
-	}
-	if _u.mutation.WarrantyExpiresCleared() {
-		_spec.ClearField(entity.FieldWarrantyExpires, field.TypeTime)
-	}
-	if value, ok := _u.mutation.WarrantyDetails(); ok {
-		_spec.SetField(entity.FieldWarrantyDetails, field.TypeString, value)
-	}
-	if _u.mutation.WarrantyDetailsCleared() {
-		_spec.ClearField(entity.FieldWarrantyDetails, field.TypeString)
-	}
 	if value, ok := _u.mutation.PurchaseDate(); ok {
 		_spec.SetField(entity.FieldPurchaseDate, field.TypeTime, value)
 	}
@@ -920,30 +760,6 @@ func (_u *EntityUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.AddedPurchasePrice(); ok {
 		_spec.AddField(entity.FieldPurchasePrice, field.TypeFloat64, value)
-	}
-	if value, ok := _u.mutation.SoldDate(); ok {
-		_spec.SetField(entity.FieldSoldDate, field.TypeTime, value)
-	}
-	if _u.mutation.SoldDateCleared() {
-		_spec.ClearField(entity.FieldSoldDate, field.TypeTime)
-	}
-	if value, ok := _u.mutation.SoldTo(); ok {
-		_spec.SetField(entity.FieldSoldTo, field.TypeString, value)
-	}
-	if _u.mutation.SoldToCleared() {
-		_spec.ClearField(entity.FieldSoldTo, field.TypeString)
-	}
-	if value, ok := _u.mutation.SoldPrice(); ok {
-		_spec.SetField(entity.FieldSoldPrice, field.TypeFloat64, value)
-	}
-	if value, ok := _u.mutation.AddedSoldPrice(); ok {
-		_spec.AddField(entity.FieldSoldPrice, field.TypeFloat64, value)
-	}
-	if value, ok := _u.mutation.SoldNotes(); ok {
-		_spec.SetField(entity.FieldSoldNotes, field.TypeString, value)
-	}
-	if _u.mutation.SoldNotesCleared() {
-		_spec.ClearField(entity.FieldSoldNotes, field.TypeString)
 	}
 	if _u.mutation.GroupCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1515,60 +1331,6 @@ func (_u *EntityUpdateOne) ClearManufacturer() *EntityUpdateOne {
 	return _u
 }
 
-// SetLifetimeWarranty sets the "lifetime_warranty" field.
-func (_u *EntityUpdateOne) SetLifetimeWarranty(v bool) *EntityUpdateOne {
-	_u.mutation.SetLifetimeWarranty(v)
-	return _u
-}
-
-// SetNillableLifetimeWarranty sets the "lifetime_warranty" field if the given value is not nil.
-func (_u *EntityUpdateOne) SetNillableLifetimeWarranty(v *bool) *EntityUpdateOne {
-	if v != nil {
-		_u.SetLifetimeWarranty(*v)
-	}
-	return _u
-}
-
-// SetWarrantyExpires sets the "warranty_expires" field.
-func (_u *EntityUpdateOne) SetWarrantyExpires(v time.Time) *EntityUpdateOne {
-	_u.mutation.SetWarrantyExpires(v)
-	return _u
-}
-
-// SetNillableWarrantyExpires sets the "warranty_expires" field if the given value is not nil.
-func (_u *EntityUpdateOne) SetNillableWarrantyExpires(v *time.Time) *EntityUpdateOne {
-	if v != nil {
-		_u.SetWarrantyExpires(*v)
-	}
-	return _u
-}
-
-// ClearWarrantyExpires clears the value of the "warranty_expires" field.
-func (_u *EntityUpdateOne) ClearWarrantyExpires() *EntityUpdateOne {
-	_u.mutation.ClearWarrantyExpires()
-	return _u
-}
-
-// SetWarrantyDetails sets the "warranty_details" field.
-func (_u *EntityUpdateOne) SetWarrantyDetails(v string) *EntityUpdateOne {
-	_u.mutation.SetWarrantyDetails(v)
-	return _u
-}
-
-// SetNillableWarrantyDetails sets the "warranty_details" field if the given value is not nil.
-func (_u *EntityUpdateOne) SetNillableWarrantyDetails(v *string) *EntityUpdateOne {
-	if v != nil {
-		_u.SetWarrantyDetails(*v)
-	}
-	return _u
-}
-
-// ClearWarrantyDetails clears the value of the "warranty_details" field.
-func (_u *EntityUpdateOne) ClearWarrantyDetails() *EntityUpdateOne {
-	_u.mutation.ClearWarrantyDetails()
-	return _u
-}
-
 // SetPurchaseDate sets the "purchase_date" field.
 func (_u *EntityUpdateOne) SetPurchaseDate(v time.Time) *EntityUpdateOne {
 	_u.mutation.SetPurchaseDate(v)
@@ -1627,87 +1389,6 @@ func (_u *EntityUpdateOne) SetNillablePurchasePrice(v *float64) *EntityUpdateOne
 // AddPurchasePrice adds value to the "purchase_price" field.
 func (_u *EntityUpdateOne) AddPurchasePrice(v float64) *EntityUpdateOne {
 	_u.mutation.AddPurchasePrice(v)
-	return _u
-}
-
-// SetSoldDate sets the "sold_date" field.
-func (_u *EntityUpdateOne) SetSoldDate(v time.Time) *EntityUpdateOne {
-	_u.mutation.SetSoldDate(v)
-	return _u
-}
-
-// SetNillableSoldDate sets the "sold_date" field if the given value is not nil.
-func (_u *EntityUpdateOne) SetNillableSoldDate(v *time.Time) *EntityUpdateOne {
-	if v != nil {
-		_u.SetSoldDate(*v)
-	}
-	return _u
-}
-
-// ClearSoldDate clears the value of the "sold_date" field.
-func (_u *EntityUpdateOne) ClearSoldDate() *EntityUpdateOne {
-	_u.mutation.ClearSoldDate()
-	return _u
-}
-
-// SetSoldTo sets the "sold_to" field.
-func (_u *EntityUpdateOne) SetSoldTo(v string) *EntityUpdateOne {
-	_u.mutation.SetSoldTo(v)
-	return _u
-}
-
-// SetNillableSoldTo sets the "sold_to" field if the given value is not nil.
-func (_u *EntityUpdateOne) SetNillableSoldTo(v *string) *EntityUpdateOne {
-	if v != nil {
-		_u.SetSoldTo(*v)
-	}
-	return _u
-}
-
-// ClearSoldTo clears the value of the "sold_to" field.
-func (_u *EntityUpdateOne) ClearSoldTo() *EntityUpdateOne {
-	_u.mutation.ClearSoldTo()
-	return _u
-}
-
-// SetSoldPrice sets the "sold_price" field.
-func (_u *EntityUpdateOne) SetSoldPrice(v float64) *EntityUpdateOne {
-	_u.mutation.ResetSoldPrice()
-	_u.mutation.SetSoldPrice(v)
-	return _u
-}
-
-// SetNillableSoldPrice sets the "sold_price" field if the given value is not nil.
-func (_u *EntityUpdateOne) SetNillableSoldPrice(v *float64) *EntityUpdateOne {
-	if v != nil {
-		_u.SetSoldPrice(*v)
-	}
-	return _u
-}
-
-// AddSoldPrice adds value to the "sold_price" field.
-func (_u *EntityUpdateOne) AddSoldPrice(v float64) *EntityUpdateOne {
-	_u.mutation.AddSoldPrice(v)
-	return _u
-}
-
-// SetSoldNotes sets the "sold_notes" field.
-func (_u *EntityUpdateOne) SetSoldNotes(v string) *EntityUpdateOne {
-	_u.mutation.SetSoldNotes(v)
-	return _u
-}
-
-// SetNillableSoldNotes sets the "sold_notes" field if the given value is not nil.
-func (_u *EntityUpdateOne) SetNillableSoldNotes(v *string) *EntityUpdateOne {
-	if v != nil {
-		_u.SetSoldNotes(*v)
-	}
-	return _u
-}
-
-// ClearSoldNotes clears the value of the "sold_notes" field.
-func (_u *EntityUpdateOne) ClearSoldNotes() *EntityUpdateOne {
-	_u.mutation.ClearSoldNotes()
 	return _u
 }
 
@@ -2046,16 +1727,6 @@ func (_u *EntityUpdateOne) check() error {
 			return &ValidationError{Name: "manufacturer", err: fmt.Errorf(`ent: validator failed for field "Entity.manufacturer": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.WarrantyDetails(); ok {
-		if err := entity.WarrantyDetailsValidator(v); err != nil {
-			return &ValidationError{Name: "warranty_details", err: fmt.Errorf(`ent: validator failed for field "Entity.warranty_details": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.SoldNotes(); ok {
-		if err := entity.SoldNotesValidator(v); err != nil {
-			return &ValidationError{Name: "sold_notes", err: fmt.Errorf(`ent: validator failed for field "Entity.sold_notes": %w`, err)}
-		}
-	}
 	if _u.mutation.GroupCleared() && len(_u.mutation.GroupIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Entity.group"`)
 	}
@@ -2160,21 +1831,6 @@ func (_u *EntityUpdateOne) sqlSave(ctx context.Context) (_node *Entity, err erro
 	if _u.mutation.ManufacturerCleared() {
 		_spec.ClearField(entity.FieldManufacturer, field.TypeString)
 	}
-	if value, ok := _u.mutation.LifetimeWarranty(); ok {
-		_spec.SetField(entity.FieldLifetimeWarranty, field.TypeBool, value)
-	}
-	if value, ok := _u.mutation.WarrantyExpires(); ok {
-		_spec.SetField(entity.FieldWarrantyExpires, field.TypeTime, value)
-	}
-	if _u.mutation.WarrantyExpiresCleared() {
-		_spec.ClearField(entity.FieldWarrantyExpires, field.TypeTime)
-	}
-	if value, ok := _u.mutation.WarrantyDetails(); ok {
-		_spec.SetField(entity.FieldWarrantyDetails, field.TypeString, value)
-	}
-	if _u.mutation.WarrantyDetailsCleared() {
-		_spec.ClearField(entity.FieldWarrantyDetails, field.TypeString)
-	}
 	if value, ok := _u.mutation.PurchaseDate(); ok {
 		_spec.SetField(entity.FieldPurchaseDate, field.TypeTime, value)
 	}
@@ -2192,30 +1848,6 @@ func (_u *EntityUpdateOne) sqlSave(ctx context.Context) (_node *Entity, err erro
 	}
 	if value, ok := _u.mutation.AddedPurchasePrice(); ok {
 		_spec.AddField(entity.FieldPurchasePrice, field.TypeFloat64, value)
-	}
-	if value, ok := _u.mutation.SoldDate(); ok {
-		_spec.SetField(entity.FieldSoldDate, field.TypeTime, value)
-	}
-	if _u.mutation.SoldDateCleared() {
-		_spec.ClearField(entity.FieldSoldDate, field.TypeTime)
-	}
-	if value, ok := _u.mutation.SoldTo(); ok {
-		_spec.SetField(entity.FieldSoldTo, field.TypeString, value)
-	}
-	if _u.mutation.SoldToCleared() {
-		_spec.ClearField(entity.FieldSoldTo, field.TypeString)
-	}
-	if value, ok := _u.mutation.SoldPrice(); ok {
-		_spec.SetField(entity.FieldSoldPrice, field.TypeFloat64, value)
-	}
-	if value, ok := _u.mutation.AddedSoldPrice(); ok {
-		_spec.AddField(entity.FieldSoldPrice, field.TypeFloat64, value)
-	}
-	if value, ok := _u.mutation.SoldNotes(); ok {
-		_spec.SetField(entity.FieldSoldNotes, field.TypeString, value)
-	}
-	if _u.mutation.SoldNotesCleared() {
-		_spec.ClearField(entity.FieldSoldNotes, field.TypeString)
 	}
 	if _u.mutation.GroupCleared() {
 		edge := &sqlgraph.EdgeSpec{

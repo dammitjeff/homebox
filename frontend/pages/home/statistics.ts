@@ -5,6 +5,8 @@ type StatCard = {
   label: string;
   value: number;
   type: "currency" | "number";
+  to?: string;
+  variant?: "default" | "warning";
 };
 
 export function statCardData(api: UserClient) {
@@ -21,6 +23,11 @@ export function statCardData(api: UserClient) {
     }
   );
 
+  const { data: pendingCount } = useAsyncData("pending-decisions", async () => {
+    const { data } = await api.items.getAll({ status: "pending", page: 1, pageSize: 1 });
+    return data?.total ?? 0;
+  });
+
   return computed(() => {
     return [
       {
@@ -34,14 +41,11 @@ export function statCardData(api: UserClient) {
         type: "number",
       },
       {
-        label: t("home.total_locations"),
-        value: statistics.value?.totalLocations || 0,
+        label: "Needs Decision",
+        value: pendingCount.value ?? 0,
         type: "number",
-      },
-      {
-        label: t("home.total_tags"),
-        value: statistics.value?.totalTags || 0,
-        type: "number",
+        to: "/decisions",
+        variant: "warning",
       },
     ] as StatCard[];
   });

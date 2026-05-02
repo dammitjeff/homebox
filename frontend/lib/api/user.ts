@@ -11,13 +11,11 @@ import { ReportsAPI } from "./classes/reports";
 import { NotifiersAPI } from "./classes/notifiers";
 import { MaintenanceAPI } from "./classes/maintenance";
 import { ProductAPI } from "./classes/product";
-import { TemplatesApi } from "./classes/templates";
 import type { Requests } from "~~/lib/requests";
 
 export class UserClient extends BaseAPI {
   tags: TagsApi;
   items: ItemsApi;
-  templates: TemplatesApi;
   entityTypes: EntityTypesApi;
   maintenance: MaintenanceAPI;
   group: GroupApi;
@@ -44,7 +42,6 @@ export class UserClient extends BaseAPI {
 
     this.tags = new TagsApi(requests);
     this.items = new ItemsApi(requests, attachmentToken);
-    this.templates = new TemplatesApi(requests);
     this.entityTypes = new EntityTypesApi(requests);
     this.maintenance = new MaintenanceAPI(requests);
     this.group = new GroupApi(requests);

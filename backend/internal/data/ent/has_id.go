@@ -24,10 +24,6 @@ func (_m *EntityField) GetID() uuid.UUID {
 	return _m.ID
 }
 
-func (_m *EntityTemplate) GetID() uuid.UUID {
-	return _m.ID
-}
-
 func (_m *EntityType) GetID() uuid.UUID {
 	return _m.ID
 }
@@ -49,10 +45,6 @@ func (_m *Notifier) GetID() uuid.UUID {
 }
 
 func (_m *Tag) GetID() uuid.UUID {
-	return _m.ID
-}
-
-func (_m *TemplateField) GetID() uuid.UUID {
 	return _m.ID
 }
 

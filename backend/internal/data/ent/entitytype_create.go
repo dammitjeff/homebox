@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entity"
-	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytemplate"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/entitytype"
 	"github.com/sysadminsmedia/homebox/backend/internal/data/ent/group"
 )
@@ -138,25 +137,6 @@ func (_c *EntityTypeCreate) AddEntities(v ...*Entity) *EntityTypeCreate {
 		ids[i] = v[i].ID
 	}
 	return _c.AddEntityIDs(ids...)
-}
-
-// SetDefaultTemplateID sets the "default_template" edge to the EntityTemplate entity by ID.
-func (_c *EntityTypeCreate) SetDefaultTemplateID(id uuid.UUID) *EntityTypeCreate {
-	_c.mutation.SetDefaultTemplateID(id)
-	return _c
-}
-
-// SetNillableDefaultTemplateID sets the "default_template" edge to the EntityTemplate entity by ID if the given value is not nil.
-func (_c *EntityTypeCreate) SetNillableDefaultTemplateID(id *uuid.UUID) *EntityTypeCreate {
-	if id != nil {
-		_c = _c.SetDefaultTemplateID(*id)
-	}
-	return _c
-}
-
-// SetDefaultTemplate sets the "default_template" edge to the EntityTemplate entity.
-func (_c *EntityTypeCreate) SetDefaultTemplate(v *EntityTemplate) *EntityTypeCreate {
-	return _c.SetDefaultTemplateID(v.ID)
 }
 
 // Mutation returns the EntityTypeMutation object of the builder.
@@ -334,23 +314,6 @@ func (_c *EntityTypeCreate) createSpec() (*EntityType, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := _c.mutation.DefaultTemplateIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   entitytype.DefaultTemplateTable,
-			Columns: []string{entitytype.DefaultTemplateColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(entitytemplate.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.entity_type_default_template = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
