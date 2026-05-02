@@ -624,6 +624,8 @@ export interface EntityOut {
   children: EntitySummary[];
   createdAt: Date | string;
   description: string;
+  /** Status: none | pending | keep | sell | return | donate */
+  status: string;
   entityType?: EntityTypeSummary | null;
   fields: EntityFieldData[];
   id: string;
@@ -680,6 +682,8 @@ export interface EntitySummary {
   assetId: string;
   createdAt: Date | string;
   description: string;
+  /** Status: none | pending | keep | sell | return | donate */
+  status: string;
   entityType?: EntityTypeSummary | null;
   id: string;
   imageId?: string | null;
@@ -836,6 +840,8 @@ export interface EntityUpdate {
   assetId: string;
   /** @maxLength 1000 */
   description: string;
+  /** Status: none | pending | keep | sell | return | donate */
+  status: string;
   entityTypeId: string;
   fields: EntityFieldData[];
   id: string;

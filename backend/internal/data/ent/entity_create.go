@@ -145,6 +145,20 @@ func (_c *EntityCreate) SetNillableArchived(v *bool) *EntityCreate {
 	return _c
 }
 
+// SetStatus sets the "status" field.
+func (_c *EntityCreate) SetStatus(v string) *EntityCreate {
+	_c.mutation.SetStatus(v)
+	return _c
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (_c *EntityCreate) SetNillableStatus(v *string) *EntityCreate {
+	if v != nil {
+		_c.SetStatus(*v)
+	}
+	return _c
+}
+
 // SetAssetID sets the "asset_id" field.
 func (_c *EntityCreate) SetAssetID(v int64) *EntityCreate {
 	_c.mutation.SetAssetID(v)
@@ -540,6 +554,10 @@ func (_c *EntityCreate) defaults() {
 		v := entity.DefaultArchived
 		_c.mutation.SetArchived(v)
 	}
+	if _, ok := _c.mutation.Status(); !ok {
+		v := entity.DefaultStatus
+		_c.mutation.SetStatus(v)
+	}
 	if _, ok := _c.mutation.AssetID(); !ok {
 		v := entity.DefaultAssetID
 		_c.mutation.SetAssetID(v)
@@ -605,6 +623,14 @@ func (_c *EntityCreate) check() error {
 	}
 	if _, ok := _c.mutation.Archived(); !ok {
 		return &ValidationError{Name: "archived", err: errors.New(`ent: missing required field "Entity.archived"`)}
+	}
+	if _, ok := _c.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Entity.status"`)}
+	}
+	if v, ok := _c.mutation.Status(); ok {
+		if err := entity.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Entity.status": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.AssetID(); !ok {
 		return &ValidationError{Name: "asset_id", err: errors.New(`ent: missing required field "Entity.asset_id"`)}
@@ -722,6 +748,10 @@ func (_c *EntityCreate) createSpec() (*Entity, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Archived(); ok {
 		_spec.SetField(entity.FieldArchived, field.TypeBool, value)
 		_node.Archived = value
+	}
+	if value, ok := _c.mutation.Status(); ok {
+		_spec.SetField(entity.FieldStatus, field.TypeString, value)
+		_node.Status = value
 	}
 	if value, ok := _c.mutation.AssetID(); ok {
 		_spec.SetField(entity.FieldAssetID, field.TypeInt64, value)

@@ -48,6 +48,9 @@ func (Entity) Fields() []ent.Field {
 			Default(false),
 		field.Bool("archived").
 			Default(false),
+		field.String("status").
+			Default("none").
+			MaxLen(20),
 		field.Int64("asset_id").
 			Default(0),
 		field.Bool("sync_child_entity_locations").

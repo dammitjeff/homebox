@@ -33,6 +33,8 @@ const (
 	FieldInsured = "insured"
 	// FieldArchived holds the string denoting the archived field in the database.
 	FieldArchived = "archived"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
 	// FieldAssetID holds the string denoting the asset_id field in the database.
 	FieldAssetID = "asset_id"
 	// FieldSyncChildEntityLocations holds the string denoting the sync_child_entity_locations field in the database.
@@ -143,6 +145,7 @@ var Columns = []string{
 	FieldQuantity,
 	FieldInsured,
 	FieldArchived,
+	FieldStatus,
 	FieldAssetID,
 	FieldSyncChildEntityLocations,
 	FieldSerialNumber,
@@ -210,6 +213,10 @@ var (
 	DefaultInsured bool
 	// DefaultArchived holds the default value on creation for the "archived" field.
 	DefaultArchived bool
+	// DefaultStatus holds the default value on creation for the "status" field.
+	DefaultStatus string
+	// StatusValidator is a validator for the "status" field. It is called by the builders before save.
+	StatusValidator func(string) error
 	// DefaultAssetID holds the default value on creation for the "asset_id" field.
 	DefaultAssetID int64
 	// DefaultSyncChildEntityLocations holds the default value on creation for the "sync_child_entity_locations" field.
@@ -285,6 +292,11 @@ func ByInsured(opts ...sql.OrderTermOption) OrderOption {
 // ByArchived orders the results by the archived field.
 func ByArchived(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldArchived, opts...).ToFunc()
+}
+
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
 // ByAssetID orders the results by the asset_id field.

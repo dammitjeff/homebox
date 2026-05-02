@@ -1865,6 +1865,7 @@ type EntityMutation struct {
 	addquantity                 *float64
 	insured                     *bool
 	archived                    *bool
+	status                      *string
 	asset_id                    *int64
 	addasset_id                 *int64
 	sync_child_entity_locations *bool
@@ -2395,6 +2396,42 @@ func (m *EntityMutation) OldArchived(ctx context.Context) (v bool, err error) {
 // ResetArchived resets all changes to the "archived" field.
 func (m *EntityMutation) ResetArchived() {
 	m.archived = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *EntityMutation) SetStatus(s string) {
+	m.status = &s
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *EntityMutation) Status() (r string, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the Entity entity.
+// If the Entity object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EntityMutation) OldStatus(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *EntityMutation) ResetStatus() {
+	m.status = nil
 }
 
 // SetAssetID sets the "asset_id" field.
@@ -3548,7 +3585,7 @@ func (m *EntityMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EntityMutation) Fields() []string {
-	fields := make([]string, 0, 24)
+	fields := make([]string, 0, 25)
 	if m.created_at != nil {
 		fields = append(fields, entity.FieldCreatedAt)
 	}
@@ -3575,6 +3612,9 @@ func (m *EntityMutation) Fields() []string {
 	}
 	if m.archived != nil {
 		fields = append(fields, entity.FieldArchived)
+	}
+	if m.status != nil {
+		fields = append(fields, entity.FieldStatus)
 	}
 	if m.asset_id != nil {
 		fields = append(fields, entity.FieldAssetID)
@@ -3647,6 +3687,8 @@ func (m *EntityMutation) Field(name string) (ent.Value, bool) {
 		return m.Insured()
 	case entity.FieldArchived:
 		return m.Archived()
+	case entity.FieldStatus:
+		return m.Status()
 	case entity.FieldAssetID:
 		return m.AssetID()
 	case entity.FieldSyncChildEntityLocations:
@@ -3704,6 +3746,8 @@ func (m *EntityMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldInsured(ctx)
 	case entity.FieldArchived:
 		return m.OldArchived(ctx)
+	case entity.FieldStatus:
+		return m.OldStatus(ctx)
 	case entity.FieldAssetID:
 		return m.OldAssetID(ctx)
 	case entity.FieldSyncChildEntityLocations:
@@ -3805,6 +3849,13 @@ func (m *EntityMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetArchived(v)
+		return nil
+	case entity.FieldStatus:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
 		return nil
 	case entity.FieldAssetID:
 		v, ok := value.(int64)
@@ -4118,6 +4169,9 @@ func (m *EntityMutation) ResetField(name string) error {
 		return nil
 	case entity.FieldArchived:
 		m.ResetArchived()
+		return nil
+	case entity.FieldStatus:
+		m.ResetStatus()
 		return nil
 	case entity.FieldAssetID:
 		m.ResetAssetID()

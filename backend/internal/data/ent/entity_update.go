@@ -164,6 +164,20 @@ func (_u *EntityUpdate) SetNillableArchived(v *bool) *EntityUpdate {
 	return _u
 }
 
+// SetStatus sets the "status" field.
+func (_u *EntityUpdate) SetStatus(v string) *EntityUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (_u *EntityUpdate) SetNillableStatus(v *string) *EntityUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
+	}
+	return _u
+}
+
 // SetAssetID sets the "asset_id" field.
 func (_u *EntityUpdate) SetAssetID(v int64) *EntityUpdate {
 	_u.mutation.ResetAssetID()
@@ -757,6 +771,11 @@ func (_u *EntityUpdate) check() error {
 			return &ValidationError{Name: "notes", err: fmt.Errorf(`ent: validator failed for field "Entity.notes": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.Status(); ok {
+		if err := entity.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Entity.status": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.SerialNumber(); ok {
 		if err := entity.SerialNumberValidator(v); err != nil {
 			return &ValidationError{Name: "serial_number", err: fmt.Errorf(`ent: validator failed for field "Entity.serial_number": %w`, err)}
@@ -838,6 +857,9 @@ func (_u *EntityUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.Archived(); ok {
 		_spec.SetField(entity.FieldArchived, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.Status(); ok {
+		_spec.SetField(entity.FieldStatus, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.AssetID(); ok {
 		_spec.SetField(entity.FieldAssetID, field.TypeInt64, value)
@@ -1380,6 +1402,20 @@ func (_u *EntityUpdateOne) SetArchived(v bool) *EntityUpdateOne {
 func (_u *EntityUpdateOne) SetNillableArchived(v *bool) *EntityUpdateOne {
 	if v != nil {
 		_u.SetArchived(*v)
+	}
+	return _u
+}
+
+// SetStatus sets the "status" field.
+func (_u *EntityUpdateOne) SetStatus(v string) *EntityUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (_u *EntityUpdateOne) SetNillableStatus(v *string) *EntityUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
 	return _u
 }
@@ -1990,6 +2026,11 @@ func (_u *EntityUpdateOne) check() error {
 			return &ValidationError{Name: "notes", err: fmt.Errorf(`ent: validator failed for field "Entity.notes": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.Status(); ok {
+		if err := entity.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Entity.status": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.SerialNumber(); ok {
 		if err := entity.SerialNumberValidator(v); err != nil {
 			return &ValidationError{Name: "serial_number", err: fmt.Errorf(`ent: validator failed for field "Entity.serial_number": %w`, err)}
@@ -2088,6 +2129,9 @@ func (_u *EntityUpdateOne) sqlSave(ctx context.Context) (_node *Entity, err erro
 	}
 	if value, ok := _u.mutation.Archived(); ok {
 		_spec.SetField(entity.FieldArchived, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.Status(); ok {
+		_spec.SetField(entity.FieldStatus, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.AssetID(); ok {
 		_spec.SetField(entity.FieldAssetID, field.TypeInt64, value)

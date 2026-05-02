@@ -38,6 +38,8 @@ type Entity struct {
 	Insured bool `json:"insured,omitempty"`
 	// Archived holds the value of the "archived" field.
 	Archived bool `json:"archived,omitempty"`
+	// Status holds the value of the "status" field.
+	Status string `json:"status,omitempty"`
 	// AssetID holds the value of the "asset_id" field.
 	AssetID int64 `json:"asset_id,omitempty"`
 	// SyncChildEntityLocations holds the value of the "sync_child_entity_locations" field.
@@ -189,7 +191,7 @@ func (*Entity) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullFloat64)
 		case entity.FieldAssetID:
 			values[i] = new(sql.NullInt64)
-		case entity.FieldName, entity.FieldDescription, entity.FieldImportRef, entity.FieldNotes, entity.FieldSerialNumber, entity.FieldModelNumber, entity.FieldManufacturer, entity.FieldWarrantyDetails, entity.FieldPurchaseFrom, entity.FieldSoldTo, entity.FieldSoldNotes:
+		case entity.FieldName, entity.FieldDescription, entity.FieldImportRef, entity.FieldNotes, entity.FieldStatus, entity.FieldSerialNumber, entity.FieldModelNumber, entity.FieldManufacturer, entity.FieldWarrantyDetails, entity.FieldPurchaseFrom, entity.FieldSoldTo, entity.FieldSoldNotes:
 			values[i] = new(sql.NullString)
 		case entity.FieldCreatedAt, entity.FieldUpdatedAt, entity.FieldWarrantyExpires, entity.FieldPurchaseDate, entity.FieldSoldDate:
 			values[i] = new(sql.NullTime)
@@ -275,6 +277,12 @@ func (_m *Entity) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field archived", values[i])
 			} else if value.Valid {
 				_m.Archived = value.Bool
+			}
+		case entity.FieldStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				_m.Status = value.String
 			}
 		case entity.FieldAssetID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -489,6 +497,9 @@ func (_m *Entity) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("archived=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Archived))
+	builder.WriteString(", ")
+	builder.WriteString("status=")
+	builder.WriteString(_m.Status)
 	builder.WriteString(", ")
 	builder.WriteString("asset_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.AssetID))

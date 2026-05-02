@@ -1,6 +1,7 @@
 import type { Column, ColumnDef } from "@tanstack/vue-table";
 import { h } from "vue";
 import DropdownAction from "./data-table-dropdown.vue";
+import StatusCell from "./StatusCell.vue";
 import { ArrowDown, ArrowUpDown, Check, X } from "lucide-vue-next";
 import Button from "~/components/ui/button/Button.vue";
 import Checkbox from "~/components/Form/Checkbox.vue";
@@ -106,27 +107,6 @@ export function makeColumns({
       cell: ({ row }) => h("div", { class: "text-center" }, String(row.getValue("quantity") ?? "")),
     },
     {
-      id: "insured",
-      accessorKey: "insured",
-      header: ({ column }) =>
-        h(
-          Button,
-          {
-            variant: "ghost",
-            onClick: () => !disableSort && column.toggleSorting(column.getIsSorted() === "asc"),
-          },
-          () => sortable(column, "items.insured")
-        ),
-      cell: ({ row }) => {
-        const val = row.getValue("insured");
-        return h(
-          "div",
-          { class: "block mx-auto w-min" },
-          val ? h(Check, { class: "h-4 w-4 text-green-500" }) : h(X, { class: "h-4 w-4 text-destructive" })
-        );
-      },
-    },
-    {
       id: "purchasePrice",
       accessorKey: "purchasePrice",
       header: ({ column }) =>
@@ -220,6 +200,16 @@ export function makeColumns({
           { class: "text-center text-sm" },
           h(DateTime, { date: row.getValue("updatedAt") as Date, datetimeType: "date" })
         ),
+    },
+    {
+      id: "status",
+      accessorKey: "status",
+      header: () => h("div", { class: "px-4 text-sm font-medium" }, "Status"),
+      cell: ({ row }) =>
+        h(StatusCell, {
+          item: row.original as EntitySummary,
+          onRefresh: refresh,
+        }),
     },
     {
       id: "actions",

@@ -504,6 +504,16 @@
   onUnmounted(() => {
     window.removeEventListener("keydown", keyboardSave);
   });
+
+  const statusOptions = [
+    { value: "none", label: "None" },
+    { value: "pending", label: "Needs Decision" },
+    { value: "in_use", label: "In Use" },
+    { value: "keep", label: "Keep" },
+    { value: "sell", label: "Sell" },
+    { value: "return", label: "Return" },
+    { value: "donate", label: "Donate" },
+  ];
 </script>
 
 <template>
@@ -597,6 +607,19 @@
               <Switch v-model="item.syncChildEntityLocations" @update:model-value="syncChildEntityLocations()" />
             </div>
             <TagSelector v-model="item.tagIds" :tags="tags" />
+            <div class="flex flex-col gap-2">
+              <Label>Status</Label>
+              <Select v-model:model-value="item.status">
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="opt in statusOptions" :key="opt.value" :value="opt.value">
+                    {{ opt.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div class="border-t sm:p-0">

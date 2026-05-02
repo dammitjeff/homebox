@@ -53,22 +53,23 @@ type (
 	}
 
 	EntityQuery struct {
-		Page             int
-		PageSize         int
-		Search           string       `json:"search"`
-		AssetID          AssetID      `json:"assetId"`
-		ParentIDs        []uuid.UUID  `json:"parentIds"`
-		TagIDs           []uuid.UUID  `json:"tagIds"`
-		NegateTags       bool         `json:"negateTags"`
-		OnlyWithoutPhoto bool         `json:"onlyWithoutPhoto"`
-		OnlyWithPhoto    bool         `json:"onlyWithPhoto"`
-		ParentItemIDs    []uuid.UUID  `json:"parentItemIds"`
-		SortBy           string       `json:"sortBy"`
-		IncludeArchived  bool         `json:"includeArchived"`
-		IsLocation       *bool        `json:"isLocation"`     // nil=all, true=locations only, false=items only
-		FilterChildren   bool         `json:"filterChildren"` // when true, only return root entities (no parent)
-		Fields           []FieldQuery `json:"fields"`
-		OrderBy          string       `json:"orderBy"`
+		Page                int
+		PageSize            int
+		Search              string       `json:"search"`
+		AssetID             AssetID      `json:"assetId"`
+		ParentIDs           []uuid.UUID  `json:"parentIds"`
+		TagIDs              []uuid.UUID  `json:"tagIds"`
+		NegateTags          bool         `json:"negateTags"`
+		OnlyWithoutPhoto    bool         `json:"onlyWithoutPhoto"`
+		OnlyWithPhoto       bool         `json:"onlyWithPhoto"`
+		ParentItemIDs       []uuid.UUID  `json:"parentItemIds"`
+		SortBy              string       `json:"sortBy"`
+		IncludeArchived     bool         `json:"includeArchived"`
+		StatusFilter        string       `json:"statusFilter"`
+		IsLocation          *bool        `json:"isLocation"`     // nil=all, true=locations only, false=items only
+		FilterChildren      bool         `json:"filterChildren"` // when true, only return root entities (no parent)
+		Fields              []FieldQuery `json:"fields"`
+		OrderBy             string       `json:"orderBy"`
 	}
 
 	DuplicateOptions struct {
@@ -109,6 +110,7 @@ type (
 		Quantity                 float64   `json:"quantity"`
 		Insured                  bool      `json:"insured"`
 		Archived                 bool      `json:"archived"`
+		Status              string    `json:"status"`
 		SyncChildEntityLocations bool      `json:"syncChildEntityLocations"`
 		EntityTypeID             uuid.UUID `json:"entityTypeId"`
 
@@ -159,6 +161,7 @@ type (
 		Quantity    float64   `json:"quantity"`
 		Insured     bool      `json:"insured"`
 		Archived    bool      `json:"archived"`
+		Status string    `json:"status"`
 		CreatedAt   time.Time `json:"createdAt"`
 		UpdatedAt   time.Time `json:"updatedAt"`
 
@@ -263,6 +266,7 @@ func mapEntitySummary(e *ent.Entity) EntitySummary {
 		CreatedAt:     e.CreatedAt,
 		UpdatedAt:     e.UpdatedAt,
 		Archived:      e.Archived,
+		Status:   e.Status,
 		PurchasePrice: e.PurchasePrice,
 
 		// Edges
@@ -580,6 +584,10 @@ func (r *EntityRepository) QueryByGroup(ctx context.Context, gid uuid.UUID, q En
 		)
 	} else {
 		qb = qb.Where(entity.Archived(false))
+	}
+
+	if q.StatusFilter != "" {
+		qb = qb.Where(entity.Status(q.StatusFilter))
 	}
 
 	if q.Search != "" {
@@ -1437,6 +1445,7 @@ func (r *EntityRepository) UpdateByGroup(ctx context.Context, gid uuid.UUID, dat
 		SetNotes(data.Notes).
 		SetLifetimeWarranty(data.LifetimeWarranty).
 		SetInsured(data.Insured).
+		SetStatus(data.Status).
 		SetWarrantyDetails(data.WarrantyDetails).
 		SetQuantity(data.Quantity).
 		SetAssetID(int64(data.AssetID)).

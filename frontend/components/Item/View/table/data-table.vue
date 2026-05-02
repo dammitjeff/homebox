@@ -43,18 +43,29 @@
   const preferences = useViewPreferences();
   const defaultPageSize = preferences.value.itemsPerTablePage;
   const tableHeadersData = preferences.value.tableHeaders;
-  const defaultVisible = ["name", "quantity", "insured", "purchasePrice"];
+  const defaultVisible = ["name", "quantity", "status", "purchasePrice"];
 
-  const tableHeaders = computed(
-    () =>
-      tableHeadersData ??
-      props.columns
-        .filter(c => c.enableHiding !== false)
-        .map(c => ({
-          value: c.id!,
-          enabled: defaultVisible.includes(c.id ?? ""),
-        }))
-  );
+  const tableHeaders = computed(() => {
+    const allColumns = props.columns
+      .filter(c => c.enableHiding !== false)
+      .map(c => ({
+        value: c.id!,
+        enabled: defaultVisible.includes(c.id ?? ""),
+      }));
+
+    if (!tableHeadersData) {
+      return allColumns;
+    }
+
+    // Merge saved preferences with current columns so that:
+    // - columns removed from the schema are dropped
+    // - columns newly added (e.g. "status") appear with their default visibility
+    const savedMap = new Map(tableHeadersData.map(h => [h.value, h.enabled]));
+    return allColumns.map(c => ({
+      value: c.value,
+      enabled: savedMap.has(c.value) ? (savedMap.get(c.value) ?? c.enabled) : c.enabled,
+    }));
+  });
 
   const sorting = ref<SortingState>([]);
   const columnOrder = ref<string[]>([
