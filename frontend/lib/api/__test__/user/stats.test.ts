@@ -10,7 +10,6 @@ type ImportObj = {
   [`HB.quantity`]: number;
   [`HB.name`]: string;
   [`HB.description`]: string;
-  [`HB.insured`]: boolean;
   [`HB.serial_number`]: string;
   [`HB.model_number`]: string;
   [`HB.manufacturer`]: string;
@@ -56,7 +55,6 @@ function importFileGenerator(entries: number): ImportObj[] {
       [`HB.quantity`]: Number(faker.number.int(2)),
       [`HB.name`]: faker.word.words(3),
       [`HB.description`]: "",
-      [`HB.insured`]: faker.datatype.boolean(),
       [`HB.serial_number`]: faker.string.alphanumeric(5),
       [`HB.model_number`]: faker.string.alphanumeric(5),
       [`HB.manufacturer`]: faker.string.alphanumeric(5),

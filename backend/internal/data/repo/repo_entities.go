@@ -53,23 +53,23 @@ type (
 	}
 
 	EntityQuery struct {
-		Page                int
-		PageSize            int
-		Search              string       `json:"search"`
-		AssetID             AssetID      `json:"assetId"`
-		ParentIDs           []uuid.UUID  `json:"parentIds"`
-		TagIDs              []uuid.UUID  `json:"tagIds"`
-		NegateTags          bool         `json:"negateTags"`
-		OnlyWithoutPhoto    bool         `json:"onlyWithoutPhoto"`
-		OnlyWithPhoto       bool         `json:"onlyWithPhoto"`
-		ParentItemIDs       []uuid.UUID  `json:"parentItemIds"`
-		SortBy              string       `json:"sortBy"`
-		IncludeArchived     bool         `json:"includeArchived"`
-		StatusFilter        string       `json:"statusFilter"`
-		IsLocation          *bool        `json:"isLocation"`     // nil=all, true=locations only, false=items only
-		FilterChildren      bool         `json:"filterChildren"` // when true, only return root entities (no parent)
-		Fields              []FieldQuery `json:"fields"`
-		OrderBy             string       `json:"orderBy"`
+		Page             int
+		PageSize         int
+		Search           string       `json:"search"`
+		AssetID          AssetID      `json:"assetId"`
+		ParentIDs        []uuid.UUID  `json:"parentIds"`
+		TagIDs           []uuid.UUID  `json:"tagIds"`
+		NegateTags       bool         `json:"negateTags"`
+		OnlyWithoutPhoto bool         `json:"onlyWithoutPhoto"`
+		OnlyWithPhoto    bool         `json:"onlyWithPhoto"`
+		ParentItemIDs    []uuid.UUID  `json:"parentItemIds"`
+		SortBy           string       `json:"sortBy"`
+		IncludeArchived  bool         `json:"includeArchived"`
+		StatusFilter     string       `json:"statusFilter"`
+		IsLocation       *bool        `json:"isLocation"`     // nil=all, true=locations only, false=items only
+		FilterChildren   bool         `json:"filterChildren"` // when true, only return root entities (no parent)
+		Fields           []FieldQuery `json:"fields"`
+		OrderBy          string       `json:"orderBy"`
 	}
 
 	DuplicateOptions struct {
@@ -108,9 +108,8 @@ type (
 		Name                     string    `json:"name"                     validate:"required,min=1,max=255"`
 		Description              string    `json:"description"              validate:"max=1000"`
 		Quantity                 float64   `json:"quantity"`
-		Insured                  bool      `json:"insured"`
 		Archived                 bool      `json:"archived"`
-		Status              string    `json:"status"`
+		Status                   string    `json:"status"`
 		SyncChildEntityLocations bool      `json:"syncChildEntityLocations"`
 		EntityTypeID             uuid.UUID `json:"entityTypeId"`
 
@@ -148,9 +147,8 @@ type (
 		Name        string    `json:"name"`
 		Description string    `json:"description"`
 		Quantity    float64   `json:"quantity"`
-		Insured     bool      `json:"insured"`
 		Archived    bool      `json:"archived"`
-		Status string    `json:"status"`
+		Status      string    `json:"status"`
 		CreatedAt   time.Time `json:"createdAt"`
 		UpdatedAt   time.Time `json:"updatedAt"`
 
@@ -241,7 +239,7 @@ func mapEntitySummary(e *ent.Entity) EntitySummary {
 		CreatedAt:     e.CreatedAt,
 		UpdatedAt:     e.UpdatedAt,
 		Archived:      e.Archived,
-		Status:   e.Status,
+		Status:        e.Status,
 		PurchasePrice: e.PurchasePrice,
 
 		// Edges
@@ -249,7 +247,6 @@ func mapEntitySummary(e *ent.Entity) EntitySummary {
 		EntityType: et,
 		Tags:       tags,
 
-		Insured:     e.Insured,
 		ImageID:     imageID,
 		ThumbnailId: thumbnailID,
 	}
@@ -1268,7 +1265,6 @@ func (r *EntityRepository) UpdateByGroup(ctx context.Context, gid uuid.UUID, dat
 		SetPurchaseFrom(data.PurchaseFrom).
 		SetPurchasePrice(data.PurchasePrice).
 		SetNotes(data.Notes).
-		SetInsured(data.Insured).
 		SetStatus(data.Status).
 		SetQuantity(data.Quantity).
 		SetAssetID(int64(data.AssetID)).
@@ -1913,7 +1909,6 @@ func (r *EntityRepository) Duplicate(ctx context.Context, gid, id uuid.UUID, opt
 		SetPurchaseFrom(originalEntity.PurchaseFrom).
 		SetPurchasePrice(originalEntity.PurchasePrice).
 		SetNotes(originalEntity.Notes).
-		SetInsured(originalEntity.Insured).
 		SetArchived(originalEntity.Archived).
 		SetSyncChildEntityLocations(originalEntity.SyncChildEntityLocations)
 

@@ -411,7 +411,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/v{ version }\" target=\"_blank\"'>' Версия: { version } Сборка: { build } '</a>'"
         },
         "github": "Github-репозиторий проекта",
-        "insured": "Застрахован",
         "items": "Элементы",
         "join_discord": "Присоединяйтесь к Discord",
         "loading": "Загрузка…",
@@ -522,7 +521,6 @@
         "field_value": "Значение поля",
         "first": "Первый",
         "include_archive": "Включая архивированные элементы",
-        "insured": "Застраховано",
         "invalid_asset_id": "Недействительный инвентарный номер",
         "last": "Последний",
         "lifetime_warranty": "Гарантия на весь срок эксплуатации",

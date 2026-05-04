@@ -38,14 +38,6 @@
         <Separator class="mb-1" />
         <TooltipProvider :delay-duration="0">
           <div class="flex items-center gap-2">
-            <Tooltip v-if="item.insured">
-              <TooltipTrigger>
-                <MdiShieldCheck class="size-5 text-primary" />
-              </TooltipTrigger>
-              <TooltipContent>
-                {{ $t("global.insured") }}
-              </TooltipContent>
-            </Tooltip>
             <Tooltip v-if="item.archived">
               <TooltipTrigger>
                 <MdiArchive class="size-5 text-destructive" />
@@ -78,7 +70,6 @@
 
 <script setup lang="ts">
   import type { EntityOut, EntitySummary } from "~~/lib/api/types/data-contracts";
-  import MdiShieldCheck from "~icons/mdi/shield-check";
   import MdiArchive from "~icons/mdi/archive";
   import { Badge } from "@/components/ui/badge";
   import { Card } from "@/components/ui/card";

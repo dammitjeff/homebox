@@ -240,7 +240,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/{ version }\" target=\"_blank\"'>' Sürüm: { version } Yapı: { build }'</a>"
         },
         "github": "GitHub Projesi",
-        "insured": "Sigortalı",
         "items": "Öğeler",
         "join_discord": "Discord'a Katılın",
         "loading": "Yükleniyor…",
@@ -336,7 +335,6 @@
         "field_value": "Alan Değeri",
         "first": "Birinci",
         "include_archive": "Arşivlenen Öğeleri Dahil Et",
-        "insured": "Sigortalı",
         "invalid_asset_id": "Geçersiz Varlık Kimliği",
         "last": "Son",
         "lifetime_warranty": "Ömür Boyu Garanti",

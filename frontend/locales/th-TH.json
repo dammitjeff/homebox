@@ -136,7 +136,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/{ version }\" target=\"_blank\"'>' Version: { version } Build: { build } '</a>'"
         },
         "github": "GitHub Project",
-        "insured": "ประกัน",
         "items": "รายการ",
         "join_discord": "เข้าร่วม Discord",
         "locations": "สถานที่",

@@ -29,8 +29,6 @@ const (
 	FieldNotes = "notes"
 	// FieldQuantity holds the string denoting the quantity field in the database.
 	FieldQuantity = "quantity"
-	// FieldInsured holds the string denoting the insured field in the database.
-	FieldInsured = "insured"
 	// FieldArchived holds the string denoting the archived field in the database.
 	FieldArchived = "archived"
 	// FieldStatus holds the string denoting the status field in the database.
@@ -129,7 +127,6 @@ var Columns = []string{
 	FieldImportRef,
 	FieldNotes,
 	FieldQuantity,
-	FieldInsured,
 	FieldArchived,
 	FieldStatus,
 	FieldAssetID,
@@ -188,8 +185,6 @@ var (
 	NotesValidator func(string) error
 	// DefaultQuantity holds the default value on creation for the "quantity" field.
 	DefaultQuantity float64
-	// DefaultInsured holds the default value on creation for the "insured" field.
-	DefaultInsured bool
 	// DefaultArchived holds the default value on creation for the "archived" field.
 	DefaultArchived bool
 	// DefaultStatus holds the default value on creation for the "status" field.
@@ -253,11 +248,6 @@ func ByNotes(opts ...sql.OrderTermOption) OrderOption {
 // ByQuantity orders the results by the quantity field.
 func ByQuantity(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldQuantity, opts...).ToFunc()
-}
-
-// ByInsured orders the results by the insured field.
-func ByInsured(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldInsured, opts...).ToFunc()
 }
 
 // ByArchived orders the results by the archived field.

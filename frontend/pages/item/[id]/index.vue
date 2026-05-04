@@ -235,10 +235,6 @@
         copyable: true,
       },
       {
-        name: "items.insured",
-        text: item.value?.insured ? "Yes" : "No",
-      },
-      {
         name: "items.archived",
         text: item.value?.archived ? "Yes" : "No",
       },

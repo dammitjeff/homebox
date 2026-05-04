@@ -91,11 +91,6 @@ func Quantity(v float64) predicate.Entity {
 	return predicate.Entity(sql.FieldEQ(FieldQuantity, v))
 }
 
-// Insured applies equality check predicate on the "insured" field. It's identical to InsuredEQ.
-func Insured(v bool) predicate.Entity {
-	return predicate.Entity(sql.FieldEQ(FieldInsured, v))
-}
-
 // Archived applies equality check predicate on the "archived" field. It's identical to ArchivedEQ.
 func Archived(v bool) predicate.Entity {
 	return predicate.Entity(sql.FieldEQ(FieldArchived, v))
@@ -554,16 +549,6 @@ func QuantityLT(v float64) predicate.Entity {
 // QuantityLTE applies the LTE predicate on the "quantity" field.
 func QuantityLTE(v float64) predicate.Entity {
 	return predicate.Entity(sql.FieldLTE(FieldQuantity, v))
-}
-
-// InsuredEQ applies the EQ predicate on the "insured" field.
-func InsuredEQ(v bool) predicate.Entity {
-	return predicate.Entity(sql.FieldEQ(FieldInsured, v))
-}
-
-// InsuredNEQ applies the NEQ predicate on the "insured" field.
-func InsuredNEQ(v bool) predicate.Entity {
-	return predicate.Entity(sql.FieldNEQ(FieldInsured, v))
 }
 
 // ArchivedEQ applies the EQ predicate on the "archived" field.

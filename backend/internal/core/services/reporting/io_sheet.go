@@ -245,7 +245,6 @@ func (s *IOSheet) ReadItems(ctx context.Context, entities []repo.EntityOut, gid 
 			Name:        item.Name,
 			Quantity:    item.Quantity,
 			Description: item.Description,
-			Insured:     item.Insured,
 			Archived:    item.Archived,
 			URL:         url,
 

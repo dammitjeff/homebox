@@ -464,7 +464,6 @@ func (svc *EntityService) CsvImport(ctx context.Context, gid uuid.UUID, data io.
 			Name:        row.Name,
 			Description: row.Description,
 			AssetID:     effAID,
-			Insured:     row.Insured,
 			Quantity:    row.Quantity,
 			Archived:    row.Archived,
 

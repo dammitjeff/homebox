@@ -206,11 +206,6 @@
     },
     {
       type: "checkbox",
-      label: "items.insured",
-      ref: "insured",
-    },
-    {
-      type: "checkbox",
       label: "items.archived",
       ref: "archived",
     },

@@ -151,8 +151,6 @@ export interface EntEntity {
   id: string;
   /** ImportRef holds the value of the "import_ref" field. */
   import_ref: string;
-  /** Insured holds the value of the "insured" field. */
-  insured: boolean;
   /** Manufacturer holds the value of the "manufacturer" field. */
   manufacturer: string;
   /** ModelNumber holds the value of the "model_number" field. */
@@ -171,6 +169,8 @@ export interface EntEntity {
   quantity: number;
   /** SerialNumber holds the value of the "serial_number" field. */
   serial_number: string;
+  /** Status holds the value of the "status" field. */
+  status: string;
   /** SyncChildEntityLocations holds the value of the "sync_child_entity_locations" field. */
   sync_child_entity_locations: boolean;
   /** UpdatedAt holds the value of the "updated_at" field. */
@@ -513,13 +513,10 @@ export interface EntityOut {
   children: EntitySummary[];
   createdAt: Date | string;
   description: string;
-  /** Status: none | pending | keep | sell | return | donate */
-  status: string;
   entityType?: EntityTypeSummary | null;
   fields: EntityFieldData[];
   id: string;
   imageId?: string | null;
-  insured: boolean;
   /** Container-specific (populated when querying locations) */
   itemCount: number;
   manufacturer: string;
@@ -535,6 +532,7 @@ export interface EntityOut {
   purchasePrice: number;
   quantity: number;
   serialNumber: string;
+  status: string;
   syncChildEntityLocations: boolean;
   tags: TagSummary[];
   thumbnailId?: string | null;
@@ -562,12 +560,9 @@ export interface EntitySummary {
   assetId: string;
   createdAt: Date | string;
   description: string;
-  /** Status: none | pending | keep | sell | return | donate */
-  status: string;
   entityType?: EntityTypeSummary | null;
   id: string;
   imageId?: string | null;
-  insured: boolean;
   /** Container-specific (populated when querying locations) */
   itemCount: number;
   name: string;
@@ -575,6 +570,7 @@ export interface EntitySummary {
   parent?: EntitySummary | null;
   purchasePrice: number;
   quantity: number;
+  status: string;
   tags: TagSummary[];
   thumbnailId?: string | null;
   updatedAt: Date | string;
@@ -608,12 +604,9 @@ export interface EntityUpdate {
   assetId: string;
   /** @maxLength 1000 */
   description: string;
-  /** Status: none | pending | keep | sell | return | donate */
-  status: string;
   entityTypeId: string;
   fields: EntityFieldData[];
   id: string;
-  insured: boolean;
   manufacturer: string;
   modelNumber: string;
   /**
@@ -632,6 +625,7 @@ export interface EntityUpdate {
   quantity: number;
   /** Identifications */
   serialNumber: string;
+  status: string;
   syncChildEntityLocations: boolean;
   /** Edges */
   tagIds: string[];
@@ -658,7 +652,6 @@ export interface GroupStatistics {
   totalLocations: number;
   totalTags: number;
   totalUsers: number;
-  totalWithWarranty: number;
 }
 
 export interface GroupUpdate {

@@ -179,7 +179,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/{ version }\" target=\"_blank\"'>' Versi: { version } Build: { build } '</a>'"
         },
         "github": "Proyek GitHub",
-        "insured": "Diasuransikan",
         "items": "Barang",
         "join_discord": "Bergabunglah dengan Discord",
         "loading": "Memuat…",
@@ -263,7 +262,6 @@
         "field_value": "Nilai",
         "first": "Pertama",
         "include_archive": "Sertakan Item yang Diarsipkan",
-        "insured": "Diasuransikan",
         "last": "﻿Terakhir",
         "lifetime_warranty": "Garansi seumur hidup",
         "location": "Lokasi",

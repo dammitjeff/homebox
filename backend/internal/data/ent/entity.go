@@ -34,8 +34,6 @@ type Entity struct {
 	Notes string `json:"notes,omitempty"`
 	// Quantity holds the value of the "quantity" field.
 	Quantity float64 `json:"quantity,omitempty"`
-	// Insured holds the value of the "insured" field.
-	Insured bool `json:"insured,omitempty"`
 	// Archived holds the value of the "archived" field.
 	Archived bool `json:"archived,omitempty"`
 	// Status holds the value of the "status" field.
@@ -171,7 +169,7 @@ func (*Entity) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case entity.FieldInsured, entity.FieldArchived, entity.FieldSyncChildEntityLocations:
+		case entity.FieldArchived, entity.FieldSyncChildEntityLocations:
 			values[i] = new(sql.NullBool)
 		case entity.FieldQuantity, entity.FieldPurchasePrice:
 			values[i] = new(sql.NullFloat64)
@@ -251,12 +249,6 @@ func (_m *Entity) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field quantity", values[i])
 			} else if value.Valid {
 				_m.Quantity = value.Float64
-			}
-		case entity.FieldInsured:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field insured", values[i])
-			} else if value.Valid {
-				_m.Insured = value.Bool
 			}
 		case entity.FieldArchived:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -435,9 +427,6 @@ func (_m *Entity) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("quantity=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Quantity))
-	builder.WriteString(", ")
-	builder.WriteString("insured=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Insured))
 	builder.WriteString(", ")
 	builder.WriteString("archived=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Archived))

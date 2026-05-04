@@ -412,7 +412,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/v{ version }\" target=\"_blank\"'>' Versio: { version } Build: { build } '</a>'"
         },
         "github": "GitHub Projekti",
-        "insured": "Vakuutettu",
         "items": "Erä",
         "join_discord": "Liity Discord-palvelimelle",
         "loading": "Lataa…",
@@ -523,7 +522,6 @@
         "field_value": "Kentän arvo",
         "first": "Ensimmäinen",
         "include_archive": "Sisällytä arkistoidut esineet",
-        "insured": "Vakuutettu",
         "invalid_asset_id": "Virheellinen resurssitunnus",
         "last": "Viimeinen",
         "lifetime_warranty": "Elinikäinen takuu",

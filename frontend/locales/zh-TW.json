@@ -412,7 +412,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/v{ version }\" target=\"_blank\"'>' 版本: { version } 組建: { build } '</a>'"
         },
         "github": "GitHub專案",
-        "insured": "已投保",
         "items": "物品",
         "join_discord": "加入Discord",
         "loading": "讀取中…",
@@ -523,7 +522,6 @@
         "field_value": "欄位值",
         "first": "第一項",
         "include_archive": "包含已封存物品",
-        "insured": "已投保",
         "invalid_asset_id": "無效的資產ID",
         "last": "最後一項",
         "lifetime_warranty": "終身保固",

@@ -374,7 +374,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/v{ version }\" target=\"_blank\"'>' Version: { version } Bygge: { build } '</a>'"
         },
         "github": "GitHub-projekt",
-        "insured": "Försäkrad",
         "items": "Föremål",
         "join_discord": "Gå med i Discord",
         "loading": "Laddar…",
@@ -470,7 +469,6 @@
         "field_value": "Fält värde",
         "first": "Första",
         "include_archive": "Inkludera arkiverade föremål",
-        "insured": "Försäkrad",
         "invalid_asset_id": "Ogiltigt resurs-ID",
         "last": "Sista",
         "lifetime_warranty": "Livstidsgaranti",

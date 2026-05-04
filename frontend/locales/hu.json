@@ -325,7 +325,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/{ version }\" target=\"_blank\"'>' Verzió: { version } Build: { build } '</a>'"
         },
         "github": "Github projekt",
-        "insured": "Biztosítva",
         "items": "Tételek",
         "join_discord": "Csatlakozz a Discordhoz",
         "loading": "Betöltés…",
@@ -419,7 +418,6 @@
         "field_value": "Mező értéke",
         "first": "Első",
         "include_archive": "Archivált elemek belefoglalása",
-        "insured": "Biztosítva",
         "invalid_asset_id": "Érvénytelen eszközazonosító",
         "last": "Utolsó",
         "lifetime_warranty": "Élettartam garancia",

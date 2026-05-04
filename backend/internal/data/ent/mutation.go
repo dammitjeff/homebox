@@ -1859,7 +1859,6 @@ type EntityMutation struct {
 	notes                       *string
 	quantity                    *float64
 	addquantity                 *float64
-	insured                     *bool
 	archived                    *bool
 	status                      *string
 	asset_id                    *int64
@@ -2312,42 +2311,6 @@ func (m *EntityMutation) AddedQuantity() (r float64, exists bool) {
 func (m *EntityMutation) ResetQuantity() {
 	m.quantity = nil
 	m.addquantity = nil
-}
-
-// SetInsured sets the "insured" field.
-func (m *EntityMutation) SetInsured(b bool) {
-	m.insured = &b
-}
-
-// Insured returns the value of the "insured" field in the mutation.
-func (m *EntityMutation) Insured() (r bool, exists bool) {
-	v := m.insured
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldInsured returns the old "insured" field's value of the Entity entity.
-// If the Entity object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EntityMutation) OldInsured(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldInsured is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInsured requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldInsured: %w", err)
-	}
-	return oldValue.Insured, nil
-}
-
-// ResetInsured resets all changes to the "insured" field.
-func (m *EntityMutation) ResetInsured() {
-	m.insured = nil
 }
 
 // SetArchived sets the "archived" field.
@@ -3236,7 +3199,7 @@ func (m *EntityMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EntityMutation) Fields() []string {
-	fields := make([]string, 0, 18)
+	fields := make([]string, 0, 17)
 	if m.created_at != nil {
 		fields = append(fields, entity.FieldCreatedAt)
 	}
@@ -3257,9 +3220,6 @@ func (m *EntityMutation) Fields() []string {
 	}
 	if m.quantity != nil {
 		fields = append(fields, entity.FieldQuantity)
-	}
-	if m.insured != nil {
-		fields = append(fields, entity.FieldInsured)
 	}
 	if m.archived != nil {
 		fields = append(fields, entity.FieldArchived)
@@ -3313,8 +3273,6 @@ func (m *EntityMutation) Field(name string) (ent.Value, bool) {
 		return m.Notes()
 	case entity.FieldQuantity:
 		return m.Quantity()
-	case entity.FieldInsured:
-		return m.Insured()
 	case entity.FieldArchived:
 		return m.Archived()
 	case entity.FieldStatus:
@@ -3358,8 +3316,6 @@ func (m *EntityMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldNotes(ctx)
 	case entity.FieldQuantity:
 		return m.OldQuantity(ctx)
-	case entity.FieldInsured:
-		return m.OldInsured(ctx)
 	case entity.FieldArchived:
 		return m.OldArchived(ctx)
 	case entity.FieldStatus:
@@ -3437,13 +3393,6 @@ func (m *EntityMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetQuantity(v)
-		return nil
-	case entity.FieldInsured:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetInsured(v)
 		return nil
 	case entity.FieldArchived:
 		v, ok := value.(bool)
@@ -3674,9 +3623,6 @@ func (m *EntityMutation) ResetField(name string) error {
 		return nil
 	case entity.FieldQuantity:
 		m.ResetQuantity()
-		return nil
-	case entity.FieldInsured:
-		m.ResetInsured()
 		return nil
 	case entity.FieldArchived:
 		m.ResetArchived()

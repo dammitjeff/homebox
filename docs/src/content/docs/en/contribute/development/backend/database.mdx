@@ -142,8 +142,6 @@ func (Item) Fields() []ent.Field {
 			Optional(),
 		field.Int("quantity").
 			Default(1),
-		field.Bool("insured").
-			Default(false),
 		field.Bool("archived").
 			Default(false),
 		field.Int("asset_id").

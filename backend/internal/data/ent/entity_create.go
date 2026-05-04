@@ -117,20 +117,6 @@ func (_c *EntityCreate) SetNillableQuantity(v *float64) *EntityCreate {
 	return _c
 }
 
-// SetInsured sets the "insured" field.
-func (_c *EntityCreate) SetInsured(v bool) *EntityCreate {
-	_c.mutation.SetInsured(v)
-	return _c
-}
-
-// SetNillableInsured sets the "insured" field if the given value is not nil.
-func (_c *EntityCreate) SetNillableInsured(v *bool) *EntityCreate {
-	if v != nil {
-		_c.SetInsured(*v)
-	}
-	return _c
-}
-
 // SetArchived sets the "archived" field.
 func (_c *EntityCreate) SetArchived(v bool) *EntityCreate {
 	_c.mutation.SetArchived(v)
@@ -448,10 +434,6 @@ func (_c *EntityCreate) defaults() {
 		v := entity.DefaultQuantity
 		_c.mutation.SetQuantity(v)
 	}
-	if _, ok := _c.mutation.Insured(); !ok {
-		v := entity.DefaultInsured
-		_c.mutation.SetInsured(v)
-	}
 	if _, ok := _c.mutation.Archived(); !ok {
 		v := entity.DefaultArchived
 		_c.mutation.SetArchived(v)
@@ -511,9 +493,6 @@ func (_c *EntityCreate) check() error {
 	}
 	if _, ok := _c.mutation.Quantity(); !ok {
 		return &ValidationError{Name: "quantity", err: errors.New(`ent: missing required field "Entity.quantity"`)}
-	}
-	if _, ok := _c.mutation.Insured(); !ok {
-		return &ValidationError{Name: "insured", err: errors.New(`ent: missing required field "Entity.insured"`)}
 	}
 	if _, ok := _c.mutation.Archived(); !ok {
 		return &ValidationError{Name: "archived", err: errors.New(`ent: missing required field "Entity.archived"`)}
@@ -618,10 +597,6 @@ func (_c *EntityCreate) createSpec() (*Entity, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Quantity(); ok {
 		_spec.SetField(entity.FieldQuantity, field.TypeFloat64, value)
 		_node.Quantity = value
-	}
-	if value, ok := _c.mutation.Insured(); ok {
-		_spec.SetField(entity.FieldInsured, field.TypeBool, value)
-		_node.Insured = value
 	}
 	if value, ok := _c.mutation.Archived(); ok {
 		_spec.SetField(entity.FieldArchived, field.TypeBool, value)

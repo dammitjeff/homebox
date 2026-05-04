@@ -136,20 +136,6 @@ func (_u *EntityUpdate) AddQuantity(v float64) *EntityUpdate {
 	return _u
 }
 
-// SetInsured sets the "insured" field.
-func (_u *EntityUpdate) SetInsured(v bool) *EntityUpdate {
-	_u.mutation.SetInsured(v)
-	return _u
-}
-
-// SetNillableInsured sets the "insured" field if the given value is not nil.
-func (_u *EntityUpdate) SetNillableInsured(v *bool) *EntityUpdate {
-	if v != nil {
-		_u.SetInsured(*v)
-	}
-	return _u
-}
-
 // SetArchived sets the "archived" field.
 func (_u *EntityUpdate) SetArchived(v bool) *EntityUpdate {
 	_u.mutation.SetArchived(v)
@@ -707,9 +693,6 @@ func (_u *EntityUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.AddedQuantity(); ok {
 		_spec.AddField(entity.FieldQuantity, field.TypeFloat64, value)
 	}
-	if value, ok := _u.mutation.Insured(); ok {
-		_spec.SetField(entity.FieldInsured, field.TypeBool, value)
-	}
 	if value, ok := _u.mutation.Archived(); ok {
 		_spec.SetField(entity.FieldArchived, field.TypeBool, value)
 	}
@@ -1191,20 +1174,6 @@ func (_u *EntityUpdateOne) SetNillableQuantity(v *float64) *EntityUpdateOne {
 // AddQuantity adds value to the "quantity" field.
 func (_u *EntityUpdateOne) AddQuantity(v float64) *EntityUpdateOne {
 	_u.mutation.AddQuantity(v)
-	return _u
-}
-
-// SetInsured sets the "insured" field.
-func (_u *EntityUpdateOne) SetInsured(v bool) *EntityUpdateOne {
-	_u.mutation.SetInsured(v)
-	return _u
-}
-
-// SetNillableInsured sets the "insured" field if the given value is not nil.
-func (_u *EntityUpdateOne) SetNillableInsured(v *bool) *EntityUpdateOne {
-	if v != nil {
-		_u.SetInsured(*v)
-	}
 	return _u
 }
 
@@ -1794,9 +1763,6 @@ func (_u *EntityUpdateOne) sqlSave(ctx context.Context) (_node *Entity, err erro
 	}
 	if value, ok := _u.mutation.AddedQuantity(); ok {
 		_spec.AddField(entity.FieldQuantity, field.TypeFloat64, value)
-	}
-	if value, ok := _u.mutation.Insured(); ok {
-		_spec.SetField(entity.FieldInsured, field.TypeBool, value)
 	}
 	if value, ok := _u.mutation.Archived(); ok {
 		_spec.SetField(entity.FieldArchived, field.TypeBool, value)

@@ -211,7 +211,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/{ version }\" target=\"_blank\"'>' Version: { version } Build: { build } '</a>'"
         },
         "github": "GitHub プロジェクト",
-        "insured": "保険適用",
         "items": "アイテム",
         "join_discord": "Discordサーバーへの参加",
         "loading": "読込中…",
@@ -293,7 +292,6 @@
         "field_value": "フィールド値",
         "first": "最初の",
         "include_archive": "「現在は使用していない」にチェックを入れた項目を検索に含める",
-        "insured": "保険適用",
         "invalid_asset_id": "このAsset IDは無効です",
         "last": "最後",
         "lifetime_warranty": "無期限保証",

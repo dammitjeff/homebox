@@ -341,23 +341,16 @@ func TestEntityRepository_Update(t *testing.T) {
 	e := entities[0]
 
 	updateData := EntityUpdate{
-		ID:               e.ID,
-		Name:             e.Name,
-		SerialNumber:     fk.Str(10),
-		TagIDs:           nil,
-		ModelNumber:      fk.Str(10),
-		Manufacturer:     fk.Str(10),
-		PurchaseDate:     types.DateFromTime(time.Now()),
-		PurchaseFrom:     fk.Str(10),
-		PurchasePrice:    300.99,
-		SoldDate:         types.DateFromTime(time.Now()),
-		SoldTo:           fk.Str(10),
-		SoldPrice:        300.99,
-		SoldNotes:        fk.Str(10),
-		Notes:            fk.Str(10),
-		WarrantyExpires:  types.DateFromTime(time.Now()),
-		WarrantyDetails:  fk.Str(10),
-		LifetimeWarranty: true,
+		ID:            e.ID,
+		Name:          e.Name,
+		SerialNumber:  fk.Str(10),
+		TagIDs:        nil,
+		ModelNumber:   fk.Str(10),
+		Manufacturer:  fk.Str(10),
+		PurchaseDate:  types.DateFromTime(time.Now()),
+		PurchaseFrom:  fk.Str(10),
+		PurchasePrice: 300.99,
+		Notes:         fk.Str(10),
 	}
 	if e.EntityType != nil {
 		updateData.EntityTypeID = e.EntityType.ID
@@ -376,12 +369,7 @@ func TestEntityRepository_Update(t *testing.T) {
 	assert.Equal(t, updateData.Manufacturer, got.Manufacturer)
 	assert.Equal(t, updateData.PurchaseFrom, got.PurchaseFrom)
 	assert.InDelta(t, updateData.PurchasePrice, got.PurchasePrice, 0.01)
-	assert.Equal(t, updateData.SoldTo, got.SoldTo)
-	assert.InDelta(t, updateData.SoldPrice, got.SoldPrice, 0.01)
-	assert.Equal(t, updateData.SoldNotes, got.SoldNotes)
 	assert.Equal(t, updateData.Notes, got.Notes)
-	assert.Equal(t, updateData.WarrantyDetails, got.WarrantyDetails)
-	assert.Equal(t, updateData.LifetimeWarranty, got.LifetimeWarranty)
 }
 
 func TestEntityRepository_Update_WithFractionalQuantity(t *testing.T) {
@@ -426,28 +414,6 @@ func TestEntityRepository_Patch_RejectsNonFiniteQuantity(t *testing.T) {
 	err := tRepos.Entities.Patch(context.Background(), tGroup.ID, e.ID, EntityPatch{Quantity: &quantity})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "invalid quantity: must be a finite number")
-}
-
-func TestEntityRepository_CreateFromTemplate_RejectsNonFiniteQuantity(t *testing.T) {
-	containerET := useContainerEntityType(t)
-
-	cf := containerFactory()
-	cf.EntityTypeID = containerET.ID
-	container, err := tRepos.Entities.Create(context.Background(), tGroup.ID, cf)
-	require.NoError(t, err)
-
-	_, err = tRepos.Entities.CreateFromTemplate(context.Background(), tGroup.ID, EntityCreateFromTemplate{
-		Name:        fk.Str(10),
-		Description: fk.Str(20),
-		Quantity:    math.NaN(),
-		ParentID:    container.ID,
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "invalid quantity: must be a finite number")
-
-	// Cleanup
-	err = tRepos.Entities.Delete(context.Background(), container.ID)
-	require.NoError(t, err)
 }
 
 func TestEntityRepository_GetAllCustomFields(t *testing.T) {

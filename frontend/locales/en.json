@@ -417,7 +417,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/v{ version }\" target=\"_blank\"'>' Version: { version } Build: { build } '</a>'"
         },
         "github": "GitHub Project",
-        "insured": "Insured",
         "items": "Items",
         "join_discord": "Join the Discord",
         "loading": "Loading…",
@@ -532,7 +531,6 @@
         "field_value": "Field Value",
         "first": "First",
         "include_archive": "Include Archived Items",
-        "insured": "Insured",
         "invalid_asset_id": "Invalid Asset ID",
         "last": "Last",
         "lifetime_warranty": "Lifetime Warranty",

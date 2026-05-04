@@ -150,7 +150,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/{ version }\" target=\"_blank\"'>' Versiune: { version } Build: { build } '</a>'"
         },
         "github": "Proiect GitHub",
-        "insured": "Asigurat",
         "items": "Articole",
         "join_discord": "Vino pe Discord",
         "locations": "Locații",
@@ -208,7 +207,6 @@
         "field_value": "Valoare Câmp",
         "first": "Primul",
         "include_archive": "Include Articole Arhivate",
-        "insured": "Asigurat",
         "last": "Ultimul",
         "lifetime_warranty": "Garanție pe viață",
         "location": "Locație",

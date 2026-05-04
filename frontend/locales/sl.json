@@ -190,7 +190,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/{ version }\" target=\"_blank\"'>' Verzija: { version } Gradnja: { build } '</a>'"
         },
         "github": "GitHub projekt",
-        "insured": "Zavarovano",
         "items": "Predmeti",
         "join_discord": "Pridruži se na Discord",
         "loading": "Nalaganje...",
@@ -272,7 +271,6 @@
         "field_value": "Vrednost polja",
         "first": "Prvi",
         "include_archive": "Vključi arhivirane predmete",
-        "insured": "Zavarovano",
         "invalid_asset_id": "Neveljaven ID sredstva",
         "last": "Zadnji",
         "lifetime_warranty": "Doživljenjska garancija",

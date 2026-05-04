@@ -412,7 +412,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/v{ version }\" target=\"_blank\">' Verze: { version } Sestavení: { build }'</a>'"
         },
         "github": "GitHub projekt",
-        "insured": "Pojištěné",
         "items": "Položky",
         "join_discord": "Připojte se na Discord",
         "loading": "Načítání…",
@@ -523,7 +522,6 @@
         "field_value": "Hodnota pole",
         "first": "První",
         "include_archive": "Zahrnout i archivované položky",
-        "insured": "Pojištěné",
         "invalid_asset_id": "Neplatné ID majetku",
         "last": "Poslední",
         "lifetime_warranty": "Doživotní záruka",

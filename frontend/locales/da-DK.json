@@ -404,7 +404,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/v{ version }\" target=\"_blank\"'>' Version: { version } Build: { build } '</a>'"
         },
         "github": "GitHub projekt",
-        "insured": "Forsikret",
         "items": "Genstande",
         "join_discord": "Deltag i vores Discord",
         "loading": "Indlæser…",
@@ -514,7 +513,6 @@
         "field_value": "Feltværdi",
         "first": "Første",
         "include_archive": "Medtag arkiverede elementer",
-        "insured": "Forsikret",
         "invalid_asset_id": "Ugyldigt aktiv-ID",
         "last": "Sidst",
         "lifetime_warranty": "Livstidsgaranti",

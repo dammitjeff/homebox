@@ -24,7 +24,6 @@ type ExportCSVRow struct {
 	Name        string  `csv:"HB.name"`
 	Quantity    float64 `csv:"HB.quantity"`
 	Description string  `csv:"HB.description"`
-	Insured     bool    `csv:"HB.insured"`
 	Notes       string  `csv:"HB.notes"`
 
 	PurchasePrice float64    `csv:"HB.purchase_price"`

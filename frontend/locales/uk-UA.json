@@ -185,7 +185,6 @@
             "version_link": "'<'a href=\"https://github.com/sysadminsmedia/homebox/releases/tag/{ version }\" target=\"_blank\"'>' Версія: { version } Build: { build } '</a>'"
         },
         "github": "GitHub проекту",
-        "insured": "Застрахований",
         "items": "Предмети",
         "join_discord": "Доєднатися до Discord",
         "locations": "Локації",
@@ -242,7 +241,6 @@
         "field_value": "Значення поля",
         "first": "Перший",
         "include_archive": "Включити заархівовані предмети",
-        "insured": "Застраховано",
         "last": "Останній",
         "lifetime_warranty": "Довічна гарантія",
         "location": "Місце",
